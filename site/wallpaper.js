@@ -1,8 +1,10 @@
 "use strict"
 
-var wallpaperProperties = {
-  bgcolor: [1, 0, 1],
-  fps: 30
+var wallpaper = {
+  properties: {
+    bgcolor: [1, 0, 1],
+    fps: 30
+  }
 };
 
 window.wallpaperPropertyListener = {
@@ -12,14 +14,14 @@ window.wallpaperPropertyListener = {
     if (properties.bgcolor)
     {
       var bgColorStrArr = properties.bgcolor.value.split(" ");
-      wallpaperProperties.bgcolor = bgColorStrArr.map(parseFloat);
+      wallpaper.properties.bgcolor = bgColorStrArr.map(parseFloat);
     }
   },
   
   applyGeneralProperties: function(properties) {
     if (properties.fps) {
-      generalData.fps = wallpaperProperties.fps;
+      wallpaper.properties.fps = properties.fps;
     }
-  }
+  },
     
 };
