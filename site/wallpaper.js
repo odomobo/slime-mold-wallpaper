@@ -6,11 +6,20 @@ var wallpaperProperties = {
 };
 
 window.wallpaperPropertyListener = {
-    applyUserProperties: function(properties) {
-      if (properties.bgcolor)
-      {
-        var bgColorStrArr = properties.bgcolor.value.split(" ");
-        wallpaperProperties.bgcolor = bgColorStrArr.map(parseFloat);
-      }
+  
+  applyUserProperties: function(properties) {
+    // TODO: remove this and replace with something useful
+    if (properties.bgcolor)
+    {
+      var bgColorStrArr = properties.bgcolor.value.split(" ");
+      wallpaperProperties.bgcolor = bgColorStrArr.map(parseFloat);
     }
+  },
+  
+  applyGeneralProperties: function(properties) {
+    if (properties.fps) {
+      generalData.fps = wallpaperProperties.fps;
+    }
+  }
+    
 };
