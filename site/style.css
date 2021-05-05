@@ -21,6 +21,7 @@ div {
 }
 
 p {
+  white-space: pre;
   color: white;
   font-size: 48;
   font-family: Helvetica, Sans-serif;

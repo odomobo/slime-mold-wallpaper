@@ -16,11 +16,11 @@ Uses the web wallpaper engine, because the shaders supported by wallpaper engine
 
 1. [x] Launch in browser (should use simple web server thingie).
 
-2. [ ] Get a simple vertex shader working in webgl. Should display red to the screen, with yellow circle corners.
+2. [x] Get a simple vertex shader working in webgl. Should display red to the screen, with yellow circle corners.
 
-3. [ ] Save to github.
+3. [x] Save to github.
 
-4. [ ] Get working in wallpaper engine.
+4. [x] Get working in wallpaper engine.
 
 5. [ ] Get simple parameter working in wallpaper engine, to change the background color for example.
 

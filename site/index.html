@@ -2,16 +2,36 @@
   <head>
     <script type="x-shader/x-vertex" id="vertex-shader">
       #version 100
+      const vec2 madd=vec2(0.5,0.5);
+      attribute vec2 vertexIn;
+      varying vec2 textureCoord;
       void main() {
-        gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
-        gl_PointSize = 128.0;
+         textureCoord = vertexIn.xy*madd+madd; // scale vertex attribute to [0-1] range
+         gl_Position = vec4(vertexIn.xy,0.0,1.0);
       }
     </script>
     
     <script type="x-shader/x-fragment" id="fragment-shader">
       #version 100
+      precision mediump float;
+      varying vec2 textureCoord;
+      
+      uniform float u_width;
+      uniform vec4 u_bgColor;
       void main() {
-        gl_FragColor = vec4(0.18, 0.54, 0.34, 1.0);
+        vec2 coord = textureCoord;
+        coord.x = coord.x * u_width;
+        
+        bool isCorner = false;
+        isCorner = isCorner || distance(coord, vec2(0, 0)) < .1;
+        isCorner = isCorner || distance(coord, vec2(u_width, 0)) < .1;
+        isCorner = isCorner || distance(coord, vec2(0, 1)) < .1;
+        isCorner = isCorner || distance(coord, vec2(u_width, 1)) < .1;
+        
+        if (isCorner)
+          gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+        else
+          gl_FragColor = u_bgColor;
       }
     </script>
   
