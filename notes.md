@@ -22,7 +22,7 @@ Uses the web wallpaper engine, because the shaders supported by wallpaper engine
 
 4. [x] Get working in wallpaper engine.
 
-5. [ ] Get simple parameter working in wallpaper engine, to change the background color for example.
+5. [x] Get simple parameter working in wallpaper engine, to change the background color for example.
 
 6. [ ] Step 1 from seb lague. Compute buffer with all boid information, initialized with maybe random values. Pheremone texture initialized to black. Compute shader that moves boids and paints to pheremone texture. Fragment shader that draws pheremone texture.
 

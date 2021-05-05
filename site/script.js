@@ -15,16 +15,47 @@ function setupWebGL (evt) {
       return;
     
     initializeAttributes();
-    gl.useProgram(program);
     
+    window.requestAnimationFrame(draw);
+
+    //cleanup();
+  } catch (e) {
+    paragraph.innerHTML = e.message;
+  }
+}
+
+var last = -1000;
+var fpsThreshold = 0;
+function shouldSkipFrame() {
+  var now = performance.now() / 1000;
+  var dt = Math.min(now - last, 1);
+  last = now;
+  
+  if (wallpaperProperties.fps <= 0)
+    return false;
+  
+  fpsThreshold += dt;
+  if (fpsThreshold < 1.0 / wallpaperProperties.fps)
+      return true;
+  
+  fpsThreshold -= 1.0 / wallpaperProperties.fps;
+  
+  return false;
+}
+
+function draw() {
+  try {
+    window.requestAnimationFrame(draw);
+    
+    if (shouldSkipFrame())
+      return;
+    
+    gl.useProgram(program);
     setUniforms();
     gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-
-    cleanup();
     
-    paragraph.innerHtml = "Ok!";
   } catch (e) {
-    paragraph.innerHtml = e.message;
+    paragraph.innerHTML = e.message;
   }
 }
 
@@ -121,7 +152,8 @@ function setUniforms() {
   gl.uniform1f(widthLoc, aspectRatio);
   
   var bgColorLoc = gl.getUniformLocation(program, "u_bgColor");
-  gl.uniform4f(bgColorLoc, 0, 1, 0, 1);
+  var bgColor = wallpaperProperties.bgcolor;
+  gl.uniform4f(bgColorLoc, bgColor[0], bgColor[1], bgColor[2], 1);
 }
 
 function cleanup() {
