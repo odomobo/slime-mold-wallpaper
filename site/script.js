@@ -13,6 +13,8 @@ var script = {
     try {
       gl = glhelper.getRenderingContext();
       
+      glObjects.init();
+      testRender.init();
       renderToScreen.init();
       
       window.requestAnimationFrame(script.draw);
@@ -29,7 +31,10 @@ var script = {
       if (script.shouldSkipFrame())
         return;
       
-      renderToScreen.draw();
+      var pheremoneOut = glObjects.pheremoneOut;
+      
+      testRender.draw(pheremoneOut);
+      renderToScreen.draw(pheremoneOut);
       
     } catch (e) {
       err.innerHTML = e.message;

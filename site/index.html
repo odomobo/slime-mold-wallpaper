@@ -18,6 +18,19 @@
       
       uniform float u_width;
       uniform vec4 u_bgColor;
+      uniform sampler2D u_texture0;
+      void main() {
+        gl_FragColor = texture2D(u_texture0, textureCoord);
+      }
+    </script>
+    
+    <script type="x-shader/x-fragment" id="testRender-frag">
+      #version 100
+      precision mediump float;
+      varying vec2 textureCoord;
+      
+      uniform float u_width;
+      uniform vec4 u_bgColor;
       void main() {
         vec2 coord = textureCoord;
         coord.x = coord.x * u_width;
@@ -39,7 +52,9 @@
     <script type="text/javascript" src="./twgl-full.js"></script>
     <script type="text/javascript" src="./wallpaper.js"></script>
     <script type="text/javascript" src="./glhelper.js"></script>
+    <script type="text/javascript" src="./glObjects.js"></script>
     <script type="text/javascript" src="./renderToScreen.js"></script>
+    <script type="text/javascript" src="./testRender.js"></script>
     <script type="text/javascript" src="./boids.js"></script>
     <script type="text/javascript" src="./script.js"></script>
   </head>

@@ -2,16 +2,17 @@
 
 var renderToScreen = {
   
-  draw: function() {
-    gl.useProgram(renderToScreen.program.program);
-    renderToScreen.setUniforms();
+  draw: function(texture) {
+    gl.useProgram(renderToScreen.programInfo.program);
+    renderToScreen.setUniforms(texture);
     gl.bindBuffer(gl.ARRAY_BUFFER, renderToScreen.buffer);
+    twgl.bindFramebufferInfo(gl);
     gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
   },
   
-  program: null,
+  programInfo: null,
   init: function() {
-    renderToScreen.program = twgl.createProgramInfo(gl, ["vertex-shader", "renderToScreen-frag"]);
+    renderToScreen.programInfo = twgl.createProgramInfo(gl, ["vertex-shader", "renderToScreen-frag"]);
     renderToScreen.initializeVertexBuffer();
   },
   
@@ -27,15 +28,16 @@ var renderToScreen = {
     renderToScreen.buffer = buffer;
   },
   
-  setUniforms: function() {
+  setUniforms: function(texture) {
     var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
     var bgColor = wallpaper.properties.bgcolor;
     var uniforms = {
-      u_width: aspectRatio ,
+      u_width: aspectRatio,
       u_bgColor: [bgColor[0], bgColor[1], bgColor[2], 1],
+      u_texture0: texture,
     };
     
-    twgl.setUniforms(renderToScreen.program, uniforms);
+    twgl.setUniforms(renderToScreen.programInfo, uniforms);
   },
   
 };
