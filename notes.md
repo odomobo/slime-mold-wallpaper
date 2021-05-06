@@ -1,5 +1,11 @@
 # Slime Mold Wallpaper
 
+## Current problems
+
+How the heck do we have multiple programs that render to render buffers? And then share them?
+
+Do we want to use twgl? https://twgljs.org/ Looks pretty nice!
+
 ## Overall Goal
 
 To make a wallpaper for wallpaper engine that follows sebastian lague's work shown here:

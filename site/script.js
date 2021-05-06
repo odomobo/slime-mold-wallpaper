@@ -6,16 +6,14 @@ var gl;
 var script = {
   
   setupWebGL: function(evt) {
-    window.removeEventListener(evt.type, renderer.setupWebGL, false);
+    window.removeEventListener(evt.type, script.setupWebGL, false);
     
     err = document.querySelector("p");
     
     try {
-      if (!(gl = glhelper.getRenderingContext()))
-        return;
+      gl = glhelper.getRenderingContext();
       
-      if (!renderer.init())
-        return;
+      renderToScreen.init();
       
       window.requestAnimationFrame(script.draw);
     } catch (e) {
@@ -31,7 +29,7 @@ var script = {
       if (script.shouldSkipFrame())
         return;
       
-      renderer.draw();
+      renderToScreen.draw();
       
     } catch (e) {
       err.innerHTML = e.message;

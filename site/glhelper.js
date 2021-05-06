@@ -4,12 +4,7 @@ var glhelper = {
   
   createProgram: function(vertexSelector, fragmentSelector) {
     var vertexShader = glhelper.createVertexShader(vertexSelector);
-    if (vertexShader == null)
-      return null;
-    
     var fragmentShader = glhelper.createFragmentShader(fragmentSelector);
-    if (fragmentShader == null)
-      return null;
     
     var program = gl.createProgram();
     gl.attachShader(program, vertexShader);
@@ -21,11 +16,7 @@ var glhelper = {
     gl.deleteShader(fragmentShader);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
       var linkErrLog = gl.getProgramInfoLog(program);
-      cleanup();
-      err.innerHTML =
-        "Shader program did not link successfully. "
-        + "Error log:\n" + linkErrLog;
-      return null;
+      throw new Error("Shader program did not link successfully. Error log:\n" + linkErrLog);
     }
     
     return program;
@@ -38,10 +29,8 @@ var glhelper = {
     gl.compileShader(vertexShader);
     var compiled = gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS);
     if (!compiled)
-    {
-      err.innerHTML = "Vertex shader error for " + selector + ":\n" + gl.getShaderInfoLog(fragmentShader);
-      return null;
-    }
+      throw new Error("Vertex shader error for " + selector + ":\n" + gl.getShaderInfoLog(fragmentShader));
+    
     return vertexShader;
   },
 
@@ -52,10 +41,8 @@ var glhelper = {
     gl.compileShader(fragmentShader);
     var compiled = gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS);
     if (!compiled)
-    {
-      err.innerHTML = "Fragment shader error for " + selector + ":\n" + gl.getShaderInfoLog(fragmentShader);
-      return null;
-    }
+      throw new Error("Fragment shader error for " + selector + ":\n" + gl.getShaderInfoLog(fragmentShader));
+    
     return fragmentShader;
   },
   
@@ -65,11 +52,9 @@ var glhelper = {
     canvas.height = canvas.clientHeight;
     var gl = canvas.getContext("webgl")
       || canvas.getContext("experimental-webgl");
-    if (!gl) {
-      err.innerHTML = "Failed to get WebGL context.\n"
-        + "Your browser or device may not support WebGL.";
-      return null;
-    }
+    if (!gl) 
+      throw new Error("Failed to get WebGL context.\nYour browser or device may not support WebGL.");
+    
     gl.viewport(0, 0,
       gl.drawingBufferWidth, gl.drawingBufferHeight);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);

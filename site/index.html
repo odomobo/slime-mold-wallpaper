@@ -11,7 +11,7 @@
       }
     </script>
     
-    <script type="x-shader/x-fragment" id="renderer-fragment-shader">
+    <script type="x-shader/x-fragment" id="renderToScreen-frag">
       #version 100
       precision mediump float;
       varying vec2 textureCoord;
@@ -36,9 +36,10 @@
     </script>
   
     <link rel="stylesheet" href="./style.css">
+    <script type="text/javascript" src="./twgl-full.js"></script>
     <script type="text/javascript" src="./wallpaper.js"></script>
     <script type="text/javascript" src="./glhelper.js"></script>
-    <script type="text/javascript" src="./renderer.js"></script>
+    <script type="text/javascript" src="./renderToScreen.js"></script>
     <script type="text/javascript" src="./boids.js"></script>
     <script type="text/javascript" src="./script.js"></script>
   </head>
