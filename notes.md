@@ -2,7 +2,7 @@
 
 ## Current problems
 
-Why isn't float texture being set?
+None right now
 
 ## Overall Goal
 
