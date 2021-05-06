@@ -1,61 +1,158 @@
 <html>
   <head>
-    <script type="x-shader/x-vertex" id="vertex-shader">
-      #version 100
+    <script type="x-shader/x-vertex" id="render-vert">
+#version 300 es
       const vec2 madd=vec2(0.5,0.5);
-      attribute vec2 vertexIn;
-      varying vec2 textureCoord;
+      in vec2 vertexIn;
+      out vec2 textureCoord;
       void main() {
-         textureCoord = vertexIn.xy*madd+madd; // scale vertex attribute to [0-1] range
-         gl_Position = vec4(vertexIn.xy,0.0,1.0);
+        textureCoord = vertexIn.xy*madd+madd; // scale vertex attribute to [0-1] range
+        gl_Position = vec4(vertexIn.xy,0.0,1.0);
       }
     </script>
     
     <script type="x-shader/x-fragment" id="renderToScreen-frag">
-      #version 100
+#version 300 es
       precision mediump float;
-      varying vec2 textureCoord;
+      in vec2 textureCoord;
+      out vec4 FragColor;
       
-      uniform float u_width;
+      uniform float u_aspectRatio;
       uniform vec4 u_bgColor;
       uniform sampler2D u_texture0;
       void main() {
-        gl_FragColor = texture2D(u_texture0, textureCoord);
+        FragColor = texture(u_texture0, textureCoord);
       }
     </script>
     
     <script type="x-shader/x-fragment" id="testRender-frag">
-      #version 100
+#version 300 es
       precision mediump float;
-      varying vec2 textureCoord;
+      in vec2 textureCoord;
+      out vec4 FragColor;
       
-      uniform float u_width;
+      uniform float u_aspectRatio;
       uniform vec4 u_bgColor;
       void main() {
         vec2 coord = textureCoord;
-        coord.x = coord.x * u_width;
+        coord.x = coord.x * u_aspectRatio;
         
         bool isCorner = false;
         isCorner = isCorner || distance(coord, vec2(0, 0)) < .1;
-        isCorner = isCorner || distance(coord, vec2(u_width, 0)) < .1;
+        isCorner = isCorner || distance(coord, vec2(u_aspectRatio, 0)) < .1;
         isCorner = isCorner || distance(coord, vec2(0, 1)) < .1;
-        isCorner = isCorner || distance(coord, vec2(u_width, 1)) < .1;
+        isCorner = isCorner || distance(coord, vec2(u_aspectRatio, 1)) < .1;
         
         if (isCorner)
-          gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+          FragColor = vec4(1.0, 1.0, 0.0, 1.0);
         else
-          gl_FragColor = u_bgColor;
+          FragColor = u_bgColor;
+      }
+    </script>
+    
+    <script type="x-shader/x-vertex" id="renderAnts-vert">
+#version 300 es
+      const vec2 madd=vec2(0.5,0.5);
+      in vec2 vertexIn;
+      out vec2 textureCoord;
+      
+      uniform sampler2D u_antsIn;
+      uniform sampler2D u_antsOut;
+      uniform int u_antsHeight;
+      uniform int u_antsWidth;
+      uniform int u_antsSize;
+      uniform float u_aspectRatio;
+      uniform int u_screenHeight;
+      
+      vec2 angleToComponents(float angle) {
+        return vec2(sin(angle), cos(angle));
+      }
+      
+      float getPixelSize() {
+        return 1.0 / float(u_screenHeight);
+      }
+      
+      float getRoot2PixelSize() {
+        return getPixelSize() * sqrt(2.0);
+      }
+      
+      vec2 adjustCoords(vec2 coord) {
+        return vec2(coord.x, coord.y*u_aspectRatio);
+      }
+      
+      vec2 unadjustCoords(vec2 coord) {
+        return vec2(coord.x, coord.y/u_aspectRatio);
+      }
+      
+      void main() {
+        int antIndex = int(vertexIn.x);
+        float textureIndex = vertexIn.y;
+        
+        // only render 128 for now
+        // TODO: make this configurable
+        if (antIndex >= 100)
+        {
+          textureCoord = vec2(-10.0, -10.0);
+          gl_Position = vec4(-10.0, -10.0, 0.0, 1.0);
+          return;
+        }
+        
+        int antXCoordIndex = antIndex/u_antsHeight;
+        float antXCoord = (0.5 + float(antXCoordIndex)) / float(u_antsWidth);
+        
+        int antYCoordIndex = antIndex%u_antsHeight;
+        float antYCoord = (0.5 + float(antYCoordIndex)) / float(u_antsHeight);
+        
+        
+        vec4 ant;
+        if (textureIndex == 0.0)
+          ant = texture(u_antsIn, vec2(antXCoord, antYCoord));
+        else
+          ant = texture(u_antsOut, vec2(antXCoord, antYCoord));
+          
+        vec2 antPos = adjustCoords(ant.rg); // adjustCoords transforms to the screen aspect ratio
+        float antAngle = ant.b;
+        float antRandSeed = ant.a;
+        
+        vec2 antAngleComponents = angleToComponents(antAngle);
+        
+        // This is a crazy hack to make sure tiny line segments are drawn. 
+        // Near-0-length line segments aren't drawn, so we want to give each line segment at least root 2 length.
+        if (textureIndex == 0.0)
+        {
+          antPos -= antAngleComponents * getRoot2PixelSize();
+        }
+        
+        // back to square
+        antPos = unadjustCoords(antPos);
+        
+        textureCoord = antPos;
+        //gl_Position = vec4((textureCoord*1.8-0.9), 0.0, 1.0); // this is the wrong thing, but for testing purposes
+        gl_Position = vec4((textureCoord*2.0-1.0), 0.0, 1.0);
+      }
+    </script>
+    
+    <script type="x-shader/x-fragment" id="renderAnts-frag">
+#version 300 es
+      precision mediump float;
+      in vec2 textureCoord;
+      out vec4 FragColor;
+      
+      uniform float u_opacity;
+      void main() {
+        FragColor = vec4(1, 1, 1, u_opacity);
       }
     </script>
   
     <link rel="stylesheet" href="./style.css">
     <script type="text/javascript" src="./twgl-full.js"></script>
+    <script type="text/javascript" src="./constants.js"></script>
     <script type="text/javascript" src="./wallpaper.js"></script>
     <script type="text/javascript" src="./glhelper.js"></script>
     <script type="text/javascript" src="./glObjects.js"></script>
     <script type="text/javascript" src="./renderToScreen.js"></script>
     <script type="text/javascript" src="./testRender.js"></script>
-    <script type="text/javascript" src="./boids.js"></script>
+    <script type="text/javascript" src="./renderAnts.js"></script>
     <script type="text/javascript" src="./script.js"></script>
   </head>
   <body>

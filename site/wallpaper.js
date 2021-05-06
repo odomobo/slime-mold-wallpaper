@@ -3,7 +3,7 @@
 var wallpaper = {
   properties: {
     bgcolor: [1, 0, 1],
-    fps: 30
+    fps: 10
   }
 };
 

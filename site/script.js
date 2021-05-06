@@ -14,7 +14,8 @@ var script = {
       gl = glhelper.getRenderingContext();
       
       glObjects.init();
-      testRender.init();
+      //testRender.init();
+      renderAnts.init();
       renderToScreen.init();
       
       window.requestAnimationFrame(script.draw);
@@ -31,10 +32,13 @@ var script = {
       if (script.shouldSkipFrame())
         return;
       
-      var pheremoneOut = glObjects.pheremoneOut;
+      //glObjects.swap();
       
-      testRender.draw(pheremoneOut);
-      renderToScreen.draw(pheremoneOut);
+      //var pheremoneOut = glObjects.pheremoneOut;
+      
+      renderAnts.draw(glObjects.pheremoneOut, glObjects.antsIn, glObjects.antsOut);
+      //testRender.draw(glObjects.pheremoneOut);
+      renderToScreen.draw(glObjects.pheremoneOut);
       
     } catch (e) {
       err.innerHTML = e.message;

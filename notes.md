@@ -2,9 +2,7 @@
 
 ## Current problems
 
-How the heck do we have multiple programs that render to render buffers? And then share them?
-
-Do we want to use twgl? https://twgljs.org/ Looks pretty nice!
+Why isn't float texture being set?
 
 ## Overall Goal
 
@@ -30,15 +28,23 @@ Uses the web wallpaper engine, because the shaders supported by wallpaper engine
 
 5. [x] Get simple parameter working in wallpaper engine, to change the background color for example.
 
-6. [ ] Step 1 from seb lague. Compute buffer with all boid information, initialized with maybe random values. Pheremone texture initialized to black. Compute shader that moves boids and paints to pheremone texture. Fragment shader that draws pheremone texture.
+6. [x] Get rendering to texture working.
 
-7. [ ] Have boids bounce off walls.
+7. [ ] Initialize ants texture with noise.
 
-8. [ ] Compute shader that blurs pheremone texture.
+8. [ ] Render ants texture to screen.
 
-9. [ ] Have boids follow pheremones (scanning 3 points in front to determine direction).
+9. [ ] Paint ants to screen from ants texture.
 
-10. [ ] Add randomness to boids.
+x. [ ] Step 1 from seb lague. Compute buffer with all boid information, initialized with maybe random values. Pheremone texture initialized to black. Compute shader that moves boids and paints to pheremone texture. Fragment shader that draws pheremone texture.
+
+x. [ ] Have boids bounce off walls.
+
+x. [ ] Compute shader that blurs pheremone texture.
+
+x. [ ] Have boids follow pheremones (scanning 3 points in front to determine direction).
+
+x. [ ] Add randomness to boids.
 
 ## Additional step ideas:
 
