@@ -42,7 +42,7 @@ function bindBuffer() {
 var frameBufferInfo;
 function initializeFrameBufferInfo() {
   const attachments = [
-    { format: gl.RGBA32F, mag: gl.NEAREST },
+    { format: gl.RGBA, mag: gl.NEAREST },
   ];
   frameBufferInfo = twgl.createFramebufferInfo(gl, attachments, constants.antsWidth, constants.antsHeight);
 }
@@ -69,7 +69,7 @@ function setUniforms(antsIn, pheremoneIn) {
     u_antsIn: antsIn,
     u_antsOut: pheremoneIn,
     u_aspectRatio: aspectRatio,
-    u_antSpeed: 0.001,
+    u_antSpeed: 0.0001,
   };
   
   twgl.setUniforms(programInfo, uniforms);

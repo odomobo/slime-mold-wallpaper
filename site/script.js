@@ -4,6 +4,7 @@ import * as testRender from './testRender.js';
 import * as renderToScreen from './renderToScreen.js';
 import * as renderAnts from './renderAnts.js';
 import * as moveAnts from './moveAnts.js';
+import * as blurPheremone from './blurPheremone.js';
 import * as constants from './constants.js';
 import wallpaperEngine from './wallpaperEngine.js';
 
@@ -19,6 +20,7 @@ function setupWebGL(evt) {
     
     glObjects.init();
     //testRender.init();
+    blurPheremone.init();
     moveAnts.init();
     renderAnts.init();
     renderToScreen.init();
@@ -38,15 +40,17 @@ function draw() {
     if (shouldSkipFrame())
       return;
     
-    //glObjects.swapPheremone();
+    blurPheremone.draw(glObjects.pheremoneTemp, glObjects.pheremoneActive, 0);
+    glObjects.swapPheremone();
+    blurPheremone.draw(glObjects.pheremoneTemp, glObjects.pheremoneActive, 1);
+    glObjects.swapPheremone();
+    
+    moveAnts.draw(glObjects.antsTemp, glObjects.antsActive, glObjects.pheremoneActive);
     glObjects.swapAnts();
-    
-    //var pheremoneOut = glObjects.pheremoneOut;
-    
-    moveAnts.draw(glObjects.antsOut, glObjects.antsIn, glObjects.pheremoneIn);
-    renderAnts.draw(glObjects.pheremoneOut, glObjects.antsIn, glObjects.antsOut);
-    //testRender.draw(glObjects.pheremoneOut);
-    renderToScreen.draw(glObjects.pheremoneOut);
+    renderAnts.draw(glObjects.pheremoneActive, glObjects.antsActive, glObjects.antsTemp);
+    //testRender.draw(glObjects.pheremoneTemp);
+    //glObjects.swapPheremone();
+    renderToScreen.draw(glObjects.pheremoneActive);
     
     if (firstDraw)
     {

@@ -1,9 +1,9 @@
 import * as constants from './constants.js';
 
-export var pheremoneIn;
-export var pheremoneOut;
-export var antsIn;
-export var antsOut;
+export var pheremoneActive;
+export var pheremoneTemp;
+export var antsActive;
+export var antsTemp;
 
 export function init() {
   var pheremoneOptions = {
@@ -12,29 +12,29 @@ export function init() {
     format: gl.RGBA,
   };
   
-  pheremoneIn = twgl.createTexture(gl, pheremoneOptions);
-  pheremoneOut = twgl.createTexture(gl, pheremoneOptions);
+  pheremoneActive = twgl.createTexture(gl, pheremoneOptions);
+  pheremoneTemp = twgl.createTexture(gl, pheremoneOptions);
   
   createAntsTextures();
 }
 
 export function swapPheremone() {
-  var pheremoneTemp = pheremoneIn;
-  pheremoneIn = pheremoneOut;
-  pheremoneOut = pheremoneTemp;
+  var pheremoneSwap = pheremoneActive;
+  pheremoneActive = pheremoneTemp;
+  pheremoneTemp = pheremoneSwap;
 }
 
 export function swapAnts() {
-  var antsTemp = antsIn;
-  antsIn = antsOut;
-  antsOut = antsTemp;
+  var antsSwap = antsActive;
+  antsActive = antsTemp;
+  antsTemp = antsSwap;
 }
 
 function createAntsTextures() {
   var data = getAntsRandomArray();
   
-  antsIn = createAntsTexture(data);
-  antsOut = createAntsTexture(data);
+  antsActive = createAntsTexture(data);
+  antsTemp = createAntsTexture(data);
 }
 
 function createAntsTexture(data) {
