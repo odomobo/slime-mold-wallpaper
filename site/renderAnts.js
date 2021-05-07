@@ -1,11 +1,16 @@
 import * as constants from './constants.js';
 
 export function draw(pheremoneOut, antsIn, antsOut) {
+  bindFrameBuffer(pheremoneOut);
+  
   gl.useProgram(programInfo.program);
   setUniforms(antsIn, antsOut);
   bindBuffer();
-  bindFrameBuffer(pheremoneOut);
+  
   gl.drawArrays(gl.LINES, 0, constants.antsSize*2); // 2 points per ant is 1 line per ant
+  gl.flush();
+  
+  unbindFrameBuffer();
 }
 
 var programInfo;
@@ -46,12 +51,21 @@ function initializeFrameBufferInfo() {
 }
 
 function bindFrameBuffer(texture) {
-  twgl.bindFramebufferInfo(gl, frameBufferInfo);
-  
   const attachmentPoint = gl.COLOR_ATTACHMENT0;
   const level = 0; // why??
+
+  twgl.bindFramebufferInfo(gl, frameBufferInfo);
   gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, texture, level);
 }
+
+function unbindFrameBuffer() {
+  const attachmentPoint = gl.COLOR_ATTACHMENT0;
+  const level = 0; // why??
+  
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, null, level);
+  twgl.bindFramebufferInfo(gl);
+}
+
 
 function setUniforms(antsIn, antsOut) {
   var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;

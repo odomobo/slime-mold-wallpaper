@@ -1,7 +1,7 @@
 
 export var wallpaperEngine = {
   bgcolor: [1, 0, 1],
-  fps: 10
+  fps: 15
 };
 
 window.wallpaperEnginePropertyListener = {

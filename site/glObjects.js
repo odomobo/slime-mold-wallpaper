@@ -18,11 +18,13 @@ export function init() {
   createAntsTextures();
 }
 
-export function swap() {
+export function swapPheremone() {
   var pheremoneTemp = pheremoneIn;
   pheremoneIn = pheremoneOut;
   pheremoneOut = pheremoneTemp;
-  
+}
+
+export function swapAnts() {
   var antsTemp = antsIn;
   antsIn = antsOut;
   antsOut = antsTemp;

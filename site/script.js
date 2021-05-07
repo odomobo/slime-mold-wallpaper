@@ -3,6 +3,7 @@ import * as glObjects from './glObjects.js';
 import * as testRender from './testRender.js';
 import * as renderToScreen from './renderToScreen.js';
 import * as renderAnts from './renderAnts.js';
+import * as moveAnts from './moveAnts.js';
 import * as constants from './constants.js';
 import wallpaperEngine from './wallpaperEngine.js';
 
@@ -18,6 +19,7 @@ function setupWebGL(evt) {
     
     glObjects.init();
     //testRender.init();
+    moveAnts.init();
     renderAnts.init();
     renderToScreen.init();
     
@@ -35,10 +37,12 @@ function draw() {
     if (shouldSkipFrame())
       return;
     
-    //glObjects.swap();
+    //glObjects.swapPheremone();
+    glObjects.swapAnts();
     
     //var pheremoneOut = glObjects.pheremoneOut;
     
+    moveAnts.draw(glObjects.antsOut, glObjects.antsIn, glObjects.pheremoneIn);
     renderAnts.draw(glObjects.pheremoneOut, glObjects.antsIn, glObjects.antsOut);
     //testRender.draw(glObjects.pheremoneOut);
     renderToScreen.draw(glObjects.pheremoneOut);

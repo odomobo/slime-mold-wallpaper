@@ -2,11 +2,14 @@ import wallpaperEngine from './wallpaperEngine.js';
 import * as constants from './constants.js';
 
 export function draw(texture) {
+  twgl.bindFramebufferInfo(gl);
+  
   gl.useProgram(programInfo.program);
   setUniforms(texture);
   bindBuffer();
-  twgl.bindFramebufferInfo(gl);
+  
   gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+  gl.flush();
 }
 
 var programInfo;
