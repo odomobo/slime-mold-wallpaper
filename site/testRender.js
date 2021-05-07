@@ -49,7 +49,7 @@ function bindFrameBuffer(texture) {
 
 function setUniforms() {
   var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
-  var bgColor = wallpaperEngine.bgcolor;
+  var bgColor = wallpaperEngine.renderColor;
   var uniforms = {
     u_aspectRatio: aspectRatio,
     u_bgColor: [.8, .8, 1, 1],

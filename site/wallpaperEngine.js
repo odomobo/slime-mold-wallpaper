@@ -16,23 +16,33 @@ export var rotationSpeed = constants.defaultRotationSpeed;
 export var senseAngle = constants.defaultSenseAngle;
 export var senseLead = constants.defaultSenseLead;
 
-window.wallpaperEnginePropertyListener = {
-  
-  applyGeneralProperties: function(properties) {
-    if (properties.fps) {
-      fps = properties.fps;
-    }
-  },
-  
-  applyUserProperties: function(properties) {
-    // TODO: remove this and replace with something useful
-    if (properties.bgcolor)
-    {
-      var bgColorStrArr = properties.bgcolor.value.split(" ");
-      rendercolor = bgColorStrArr.map(parseFloat);
-    }
-  },
-  
-};
+function applyUserProperties(properties) {
+  // TODO: remove this and replace with something useful
+  try {
+    
+    if (properties.schemecolor)
+      renderColor = properties.schemecolor.value.split(" ").map(parseFloat);
+    
+    
+    
+  } catch (e) {
+    err.innerHTML = e.message;
+    throw e;
+  }
+}
 
-//export default wallpaperEngine;
+function applyGeneralProperties(properties) {
+  try {
+    if (properties.fps)
+      fps = properties.fps;
+    
+  } catch (e) {
+    err.innerHTML = e.message;
+    throw e;
+  }
+}
+
+window.wallpaperPropertyListener = {
+  applyGeneralProperties: applyGeneralProperties,
+  applyUserProperties: applyUserProperties,
+};

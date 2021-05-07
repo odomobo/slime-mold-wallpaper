@@ -8,8 +8,6 @@ import * as blurPheremone from './blurPheremone.js';
 import * as constants from './constants.js';
 import * as wallpaperEngine from './wallpaperEngine.js';
 
-var err;
-
 function setupWebGL(evt) {
   window.removeEventListener(evt.type, setupWebGL, false);
   
@@ -32,7 +30,6 @@ function setupWebGL(evt) {
   }
 }
 
-var firstDraw = true;
 function draw() {
   try {
     window.requestAnimationFrame(draw);
@@ -51,13 +48,6 @@ function draw() {
     //testRender.draw(glObjects.pheremoneTemp);
     //glObjects.swapPheremone();
     renderToScreen.draw(glObjects.pheremoneActive);
-    
-    if (firstDraw)
-    {
-      // this allows only one frame to be rendered on the first draw, and then it needs to wait for the next one
-      fpsThreshold = 0;
-      firstDraw = false;
-    }
     
   } catch (e) {
     err.innerHTML = e.message;
@@ -80,6 +70,10 @@ function shouldSkipFrame() {
       return true;
   
   fpsThreshold -= 1.0 / wallpaperEngine.fps;
+  
+  // don't queue up frames to render
+  if (fpsThreshold > 0.9 / wallpaperEngine.fps)
+    fpsThreshold = 0.9 / wallpaperEngine.fps;
   
   return false;
 }

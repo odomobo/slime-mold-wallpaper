@@ -2,7 +2,7 @@
 
 ## Current problems
 
-None right now
+Need to fix performance issues; maybe scale back number of ants for now.
 
 ## Overall Goal
 
