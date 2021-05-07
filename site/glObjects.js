@@ -56,7 +56,7 @@ function getAntsRandomArray() {
   {
     arr[i*4 + 0] = Math.random(); // x
     arr[i*4 + 1] = Math.random(); // y
-    arr[i*4 + 2] = Math.random()*6.28; // angle
+    arr[i*4 + 2] = Math.random()*2*Math.PI; // angle
     arr[i*4 + 3] = Math.random(); // random seed
   }
   

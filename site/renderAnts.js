@@ -1,11 +1,11 @@
 import * as constants from './constants.js';
 import * as wallpaperEngine from './wallpaperEngine.js';
 
-export function draw(pheremoneOut, antsIn, antsOut) {
+export function draw(pheremoneOut, antsActive, antsLast) {
   bindFrameBuffer(pheremoneOut);
   
   gl.useProgram(programInfo.program);
-  setUniforms(antsIn, antsOut);
+  setUniforms(antsActive, antsLast);
   bindBuffer();
   
   gl.enable(gl.BLEND);
@@ -76,18 +76,19 @@ function unbindFrameBuffer() {
 }
 
 
-function setUniforms(antsIn, antsOut) {
+function setUniforms(antsActive, antsLast) {
   var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
   
   var uniforms = {
-    u_antsIn: antsIn,
-    u_antsOut: antsOut,
+    u_antsActive: antsActive,
+    u_antsLast: antsLast,
     u_opacity: wallpaperEngine.antOpacity / wallpaperEngine.fps, // include speed in here also?
     u_antsHeight: constants.antsHeight,
     u_antsWidth: constants.antsWidth,
     u_antsSize: constants.antsSize,
     u_aspectRatio: aspectRatio,
     u_screenHeight: gl.drawingBufferHeight,
+    u_numberOfAnts: wallpaperEngine.numberOfAnts,
   };
   
   twgl.setUniforms(programInfo, uniforms);
@@ -98,13 +99,14 @@ const vec2 madd=vec2(0.5,0.5);
 in vec2 vertexIn;
 out vec2 textureCoord;
 
-uniform sampler2D u_antsIn;
-uniform sampler2D u_antsOut;
+uniform sampler2D u_antsActive;
+uniform sampler2D u_antsLast;
 uniform int u_antsHeight;
 uniform int u_antsWidth;
 uniform int u_antsSize;
 uniform float u_aspectRatio;
 uniform int u_screenHeight;
+uniform int u_numberOfAnts;
 
 vec2 angleToComponents(float angle) {
   return vec2(sin(angle), cos(angle));
@@ -130,9 +132,7 @@ void main() {
   int antIndex = int(vertexIn.x);
   float textureIndex = vertexIn.y;
   
-  // only render 128 for now
-  // TODO: make this configurable
-  if (antIndex >= 100)
+  if (antIndex >= u_numberOfAnts)
   {
     textureCoord = vec2(-10.0, -10.0);
     gl_Position = vec4(-10.0, -10.0, 0.0, 1.0);
@@ -148,9 +148,9 @@ void main() {
   
   vec4 ant;
   if (textureIndex == 0.0)
-    ant = texture(u_antsIn, vec2(antXCoord, antYCoord));
+    ant = texture(u_antsActive, vec2(antXCoord, antYCoord));
   else
-    ant = texture(u_antsOut, vec2(antXCoord, antYCoord));
+    ant = texture(u_antsLast, vec2(antXCoord, antYCoord));
     
   vec2 antPos = adjustCoords(ant.rg); // adjustCoords transforms to the screen aspect ratio
   float antAngle = ant.b;
@@ -160,7 +160,7 @@ void main() {
   
   // This is a crazy hack to make sure tiny line segments are drawn. 
   // Near-0-length line segments aren't drawn, so we want to give each line segment at least root 2 length.
-  if (textureIndex == 0.0)
+  if (textureIndex == 1.0)
   {
     antPos -= antAngleComponents * getRoot2PixelSize();
   }

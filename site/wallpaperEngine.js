@@ -6,6 +6,11 @@ export var blurAmount = constants.defaultBlurAmount;
 export var dissipation = constants.defaultDissipation;
 export var antSpeed = constants.defaultAntSpeed;
 export var antOpacity = constants.defaultAntOpacity;
+export var numberOfAnts = constants.defaultNumberOfAnts;
+
+export var rotationSpeed = constants.defaultRotationSpeed;
+export var senseAngle = constants.defaultSenseAngle;
+export var senseLead = constants.defaultSenseLead;
 
 window.wallpaperEnginePropertyListener = {
   

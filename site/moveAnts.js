@@ -1,11 +1,11 @@
 import * as constants from './constants.js';
 import * as wallpaperEngine from './wallpaperEngine.js';
 
-export function draw(antsOut, antsIn, pheremoneIn) {
+export function draw(antsOut, antsActive, pheremoneActive) {
   bindFrameBuffer(antsOut);
   
   gl.useProgram(programInfo.program);
-  setUniforms(antsIn, pheremoneIn);
+  setUniforms(antsActive, pheremoneActive);
   bindBuffer();
   
   gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
@@ -63,13 +63,16 @@ function unbindFrameBuffer() {
   twgl.bindFramebufferInfo(gl);
 }
 
-function setUniforms(antsIn, pheremoneIn) {
+function setUniforms(antsActive, pheremoneActive) {
   var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
   var uniforms = {
-    u_antsIn: antsIn,
-    u_antsOut: pheremoneIn,
+    u_antsActive: antsActive,
+    u_pheremoneActive: pheremoneActive,
     u_aspectRatio: aspectRatio,
     u_antSpeed: wallpaperEngine.antSpeed / wallpaperEngine.fps,
+    u_senseDistance: wallpaperEngine.senseLead * wallpaperEngine.antSpeed,
+    u_senseAngle: wallpaperEngine.senseAngle * (Math.PI/180),
+    u_rotationSpeed: ( wallpaperEngine.rotationSpeed * (Math.PI/180) ) / wallpaperEngine.fps, // degrees per second
   };
   
   twgl.setUniforms(programInfo, uniforms);
@@ -82,8 +85,14 @@ out vec4 FragColor;
 
 uniform float u_aspectRatio;
 uniform float u_antSpeed;
-uniform sampler2D u_antsIn;
-uniform sampler2D u_pheremoneIn;
+uniform sampler2D u_antsActive;
+uniform sampler2D u_pheremoneActive;
+uniform float u_senseDistance;
+uniform float u_senseAngle;
+uniform float u_rotationSpeed;
+
+const int sensePointsCount = 9;
+const float PI = 3.1415926535897932384626433832795;
 
 vec2 angleToComponents(float angle) {
   return vec2(sin(angle), cos(angle));
@@ -102,8 +111,50 @@ vec2 unadjustCoords(vec2 coord) {
   return vec2(coord.x/u_aspectRatio, coord.y);
 }
 
+float senseCircleRadius() {
+  float senseDiameter = sin(u_senseAngle) * u_senseDistance; // the rough distance between sense points
+  return senseDiameter/2.0;
+}
+
+float senseCircle(vec2 adjustedCenterCoord, float radius)
+{
+  float ret = 0.0;
+  for (int i = 0; i < sensePointsCount; i++)
+  {
+    float anglePercentage = (float(i) / float(sensePointsCount));
+    float angle = anglePercentage * 2.0 * PI;
+    vec2 angleComponents = angleToComponents(angle);
+    vec2 adjustedSenseCoord = adjustedCenterCoord + angleComponents*radius;
+    float val = texture(u_pheremoneActive, unadjustCoords(adjustedSenseCoord)).r;
+    //ret = max(ret, val);
+    ret += val;
+  }
+  return ret;
+}
+
+float sense(vec2 adjustedCoord, float distance, float angle) {
+  vec2 angleComponents = angleToComponents(angle);
+  adjustedCoord = adjustedCoord + angleComponents*distance;
+  //return texture(u_pheremoneActive, unadjustCoords(adjustedCoord)).r;
+  return senseCircle(adjustedCoord, senseCircleRadius());
+}
+
+float getNewDirection(vec2 adjustedCoord, float direction) {
+  float c = sense(adjustedCoord, u_senseDistance, direction);
+  float l = sense(adjustedCoord, u_senseDistance, direction - u_senseAngle);
+  float r = sense(adjustedCoord, u_senseDistance, direction + u_senseAngle);
+  
+  if (l > c && l > r)
+    return direction - u_rotationSpeed;
+  
+  if (r > c)
+    return direction + u_rotationSpeed;
+  
+  return direction;
+}
+
 void main() {
-  vec4 ant = texture(u_antsIn, textureCoord);
+  vec4 ant = texture(u_antsActive, textureCoord);
   
   vec2 antPos = adjustCoords(ant.rg); // adjustCoords transforms to the screen aspect ratio
   float antAngle = ant.b;
@@ -127,6 +178,8 @@ void main() {
   
   // components back to angle
   antAngle = componentsToAngle(antAngleComponents);
+  
+  antAngle = getNewDirection(antPos, antAngle);
   
   // back to square
   antPos = unadjustCoords(antPos);
