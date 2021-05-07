@@ -73,6 +73,7 @@ function setUniforms(antsActive, pheremoneActive) {
     u_senseDistance: wallpaperEngine.senseLead * wallpaperEngine.antSpeed,
     u_senseAngle: wallpaperEngine.senseAngle * (Math.PI/180),
     u_rotationSpeed: ( wallpaperEngine.rotationSpeed * (Math.PI/180) ) / wallpaperEngine.fps, // degrees per second
+    u_agoraphobic: wallpaperEngine.agoraphobic,
   };
   
   twgl.setUniforms(programInfo, uniforms);
@@ -90,6 +91,7 @@ uniform sampler2D u_pheremoneActive;
 uniform float u_senseDistance;
 uniform float u_senseAngle;
 uniform float u_rotationSpeed;
+uniform bool u_agoraphobic;
 
 const int sensePointsCount = 9;
 const float PI = 3.1415926535897932384626433832795;
@@ -146,12 +148,24 @@ float reduceSenseNearEdge(float value, vec2 adjustedCoord) {
   return value * scaledDistance;
 }
 
+float adjustSenseAgoraphobia(float value) {
+  if (!u_agoraphobic)
+    return value;
+  
+  if (value <= 0.75)
+    return value;
+  else
+    return clamp(0.75-value, 0.0, 1.0);
+}
+
 float sense(vec2 adjustedCoord, float distance, float angle) {
   vec2 angleComponents = angleToComponents(angle);
   adjustedCoord = adjustedCoord + angleComponents*distance;
   //return texture(u_pheremoneActive, unadjustCoords(adjustedCoord)).r;
   float sensedValue = senseCircle(adjustedCoord, senseCircleRadius());
-  return reduceSenseNearEdge(sensedValue, adjustedCoord);
+  sensedValue = adjustSenseAgoraphobia(sensedValue);
+  sensedValue = reduceSenseNearEdge(sensedValue, adjustedCoord);
+  return sensedValue;
 }
 
 float getNewDirection(vec2 adjustedCoord, float direction) {

@@ -3,14 +3,18 @@ export const antsHeight = 1024;
 export const antsWidth = 1024;
 export const antsSize = 1024*1024;
 
+export const defaultRenderColor = [0.3, 0.5, 0.4];
+export const defaultBrightness = 1.3;
+
 export const defaultFps = 144;
 export const defaultBlurAmount = 20;
-export const defaultDissipation = 1.50;
-export const defaultAntSpeed = 0.4;
-export const defaultAntOpacity = 1.0;
+export const defaultDissipation = 0.09;
+export const defaultAntSpeed = 0.15;
+export const defaultAntOpacity = 0.08;
 export const defaultNumberOfAnts = 2000000;
+export const defaultAgoraphobic = false;
 
-export const defaultRotationSpeed = 720;
+export const defaultRotationSpeed = 180;
 export const defaultSenseAngle = 40;
 export const defaultSenseLead = 0.05;
 

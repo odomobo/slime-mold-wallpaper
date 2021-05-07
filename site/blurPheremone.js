@@ -117,7 +117,10 @@ void main() {
   
   vec4 originalValue = texture(u_pheremoneIn, textureCoord);
   vec4 blurredValue = blur9(u_pheremoneIn, textureCoord, u_resolution, direction);
-  FragColor = mix(originalValue, blurredValue, u_blurAmount) * (1.0-u_dissipation);
+  
+  vec4 outValue = mix(originalValue, blurredValue, u_blurAmount) * (1.0-u_dissipation);
+  
+  FragColor = outValue;
   //FragColor = blurredValue;
   //FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }

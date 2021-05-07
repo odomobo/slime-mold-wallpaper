@@ -37,10 +37,11 @@ function bindBuffer() {
 
 function setUniforms(texture) {
   var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
-  var bgColor = wallpaperEngine.bgcolor;
+  var renderColor = wallpaperEngine.renderColor;
   var uniforms = {
     u_aspectRatio: aspectRatio,
-    u_bgColor: [bgColor[0], bgColor[1], bgColor[2], 1],
+    u_renderColor: [renderColor[0], renderColor[1], renderColor[2], 1],
+    u_brightness: wallpaperEngine.brightness,
     u_texture0: texture,
   };
   
@@ -53,9 +54,22 @@ in vec2 textureCoord;
 out vec4 FragColor;
 
 uniform float u_aspectRatio;
-uniform vec4 u_bgColor;
+uniform vec4 u_renderColor;
+uniform float u_brightness;
 uniform sampler2D u_texture0;
 void main() {
-  FragColor = texture(u_texture0, textureCoord);
+  float value = texture(u_texture0, textureCoord).r;
+  
+  value = value * u_brightness;
+  
+  if (value < 0.5) {
+    float scaledValue = value*2.0;
+    FragColor = mix(vec4(0.0), u_renderColor, scaledValue);
+  } else {
+    float scaledValue = (value-0.5)*2.0;
+    FragColor = mix(u_renderColor, vec4(1.0), scaledValue);
+  }
+  
+  //FragColor = texture(u_texture0, textureCoord);
 }
 `;
