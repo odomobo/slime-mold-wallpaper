@@ -6,7 +6,7 @@ import * as renderAnts from './renderAnts.js';
 import * as moveAnts from './moveAnts.js';
 import * as blurPheremone from './blurPheremone.js';
 import * as constants from './constants.js';
-import wallpaperEngine from './wallpaperEngine.js';
+import * as wallpaperEngine from './wallpaperEngine.js';
 
 var err;
 

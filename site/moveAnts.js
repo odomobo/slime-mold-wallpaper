@@ -1,5 +1,5 @@
 import * as constants from './constants.js';
-import wallpaperEngine from './wallpaperEngine.js';
+import * as wallpaperEngine from './wallpaperEngine.js';
 
 export function draw(antsOut, antsIn, pheremoneIn) {
   bindFrameBuffer(antsOut);
@@ -69,7 +69,7 @@ function setUniforms(antsIn, pheremoneIn) {
     u_antsIn: antsIn,
     u_antsOut: pheremoneIn,
     u_aspectRatio: aspectRatio,
-    u_antSpeed: 0.0001,
+    u_antSpeed: wallpaperEngine.antSpeed / wallpaperEngine.fps,
   };
   
   twgl.setUniforms(programInfo, uniforms);

@@ -1,5 +1,5 @@
-import wallpaperEngine from './wallpaperEngine.js';
 import * as constants from './constants.js';
+import * as wallpaperEngine from './wallpaperEngine.js';
 
 export function draw(texture) {
   twgl.bindFramebufferInfo(gl);

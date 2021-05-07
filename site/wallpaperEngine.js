@@ -1,8 +1,11 @@
+import * as constants from './constants.js';
 
-export var wallpaperEngine = {
-  bgcolor: [1, 0, 1],
-  fps: 30
-};
+export var bgcolor = [1, 0, 1]; // TODO: remove?
+export var fps = constants.defaultFps;
+export var blurAmount = constants.defaultBlurAmount;
+export var dissipation = constants.defaultDissipation;
+export var antSpeed = constants.defaultAntSpeed;
+export var antOpacity = constants.defaultAntOpacity;
 
 window.wallpaperEnginePropertyListener = {
   
@@ -11,16 +14,16 @@ window.wallpaperEnginePropertyListener = {
     if (properties.bgcolor)
     {
       var bgColorStrArr = properties.bgcolor.value.split(" ");
-      wallpaperEngine.bgcolor = bgColorStrArr.map(parseFloat);
+      bgcolor = bgColorStrArr.map(parseFloat);
     }
   },
   
   applyGeneralProperties: function(properties) {
     if (properties.fps) {
-      wallpaperEngine.fps = properties.fps;
+      fps = properties.fps;
     }
   },
     
 };
 
-export default wallpaperEngine;
+//export default wallpaperEngine;

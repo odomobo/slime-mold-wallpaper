@@ -1,5 +1,5 @@
 import * as constants from './constants.js';
-import wallpaperEngine from './wallpaperEngine.js';
+import * as wallpaperEngine from './wallpaperEngine.js';
 
 export function draw(texture) {
   gl.useProgram(programInfo.program);

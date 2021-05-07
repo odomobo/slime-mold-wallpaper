@@ -1,4 +1,5 @@
 import * as constants from './constants.js';
+import * as wallpaperEngine from './wallpaperEngine.js';
 
 export function draw(pheremoneOut, antsIn, antsOut) {
   bindFrameBuffer(pheremoneOut);
@@ -81,7 +82,7 @@ function setUniforms(antsIn, antsOut) {
   var uniforms = {
     u_antsIn: antsIn,
     u_antsOut: antsOut,
-    u_opacity: 0.05,
+    u_opacity: wallpaperEngine.antOpacity / wallpaperEngine.fps, // include speed in here also?
     u_antsHeight: constants.antsHeight,
     u_antsWidth: constants.antsWidth,
     u_antsSize: constants.antsSize,
@@ -131,7 +132,7 @@ void main() {
   
   // only render 128 for now
   // TODO: make this configurable
-  if (antIndex >= 100000)
+  if (antIndex >= 100)
   {
     textureCoord = vec2(-10.0, -10.0);
     gl_Position = vec4(-10.0, -10.0, 0.0, 1.0);
