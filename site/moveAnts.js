@@ -129,14 +129,29 @@ float senseCircle(vec2 adjustedCenterCoord, float radius)
     //ret = max(ret, val);
     ret += val;
   }
-  return ret;
+  return ret / float(sensePointsCount); // return the average
+}
+
+// if a sensor gets senseDistance + senseCircleRadius from the edge, then let's interpolate it down to 0
+float reduceSenseNearEdge(float value, vec2 adjustedCoord) {
+  float minDistance = 1.0;
+  minDistance = min(minDistance, adjustedCoord.x - 0.0);
+  minDistance = min(minDistance, adjustedCoord.y - 0.0);
+  minDistance = min(minDistance, u_aspectRatio - adjustedCoord.x);
+  minDistance = min(minDistance, 1.0 - adjustedCoord.y);
+  
+  float scaledDistance = minDistance / (u_senseDistance + senseCircleRadius());
+  scaledDistance = clamp(scaledDistance, 0.0, 1.0);
+  
+  return value * scaledDistance;
 }
 
 float sense(vec2 adjustedCoord, float distance, float angle) {
   vec2 angleComponents = angleToComponents(angle);
   adjustedCoord = adjustedCoord + angleComponents*distance;
   //return texture(u_pheremoneActive, unadjustCoords(adjustedCoord)).r;
-  return senseCircle(adjustedCoord, senseCircleRadius());
+  float sensedValue = senseCircle(adjustedCoord, senseCircleRadius());
+  return reduceSenseNearEdge(sensedValue, adjustedCoord);
 }
 
 float getNewDirection(vec2 adjustedCoord, float direction) {

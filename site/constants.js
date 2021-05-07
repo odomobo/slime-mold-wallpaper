@@ -7,7 +7,7 @@ export const defaultFps = 144;
 export const defaultBlurAmount = 20;
 export const defaultDissipation = 1.50;
 export const defaultAntSpeed = 0.4;
-export const defaultAntOpacity = 0.5;
+export const defaultAntOpacity = 1.0;
 export const defaultNumberOfAnts = 2000000;
 
 export const defaultRotationSpeed = 720;
