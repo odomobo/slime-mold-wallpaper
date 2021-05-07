@@ -3,7 +3,7 @@ import * as glObjects from './glObjects.js';
 import * as testRender from './testRender.js';
 import * as renderToScreen from './renderToScreen.js';
 import * as renderAnts from './renderAnts.js';
-import constants from './constants.js';
+import * as constants from './constants.js';
 import wallpaperEngine from './wallpaperEngine.js';
 
 var err;

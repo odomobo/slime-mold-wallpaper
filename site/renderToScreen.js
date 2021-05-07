@@ -1,4 +1,5 @@
 import wallpaperEngine from './wallpaperEngine.js';
+import * as constants from './constants.js';
 
 export function draw(texture) {
   gl.useProgram(programInfo.program);
@@ -10,7 +11,7 @@ export function draw(texture) {
 
 var programInfo;
 export function init() {
-  programInfo = twgl.createProgramInfo(gl, ["render-vert", "renderToScreen-frag"]);
+  programInfo = twgl.createProgramInfo(gl, [constants.commonVertShader, fragShader]);
   initializeBuffer();
 }
 
@@ -42,3 +43,16 @@ function setUniforms(texture) {
   
   twgl.setUniforms(programInfo, uniforms);
 }
+
+const fragShader = `#version 300 es
+precision mediump float;
+in vec2 textureCoord;
+out vec4 FragColor;
+
+uniform float u_aspectRatio;
+uniform vec4 u_bgColor;
+uniform sampler2D u_texture0;
+void main() {
+  FragColor = texture(u_texture0, textureCoord);
+}
+`;

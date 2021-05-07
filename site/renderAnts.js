@@ -1,4 +1,4 @@
-import constants from './constants.js';
+import * as constants from './constants.js';
 
 export function draw(pheremoneOut, antsIn, antsOut) {
   gl.useProgram(programInfo.program);
@@ -10,7 +10,7 @@ export function draw(pheremoneOut, antsIn, antsOut) {
 
 var programInfo;
 export function init() {
-  programInfo = twgl.createProgramInfo(gl, ["renderAnts-vert", "renderAnts-frag"]);
+  programInfo = twgl.createProgramInfo(gl, [vertShader, fragShader]);
   initializeFrameBufferInfo();
   initializeBuffer();
 }
@@ -69,3 +69,96 @@ function setUniforms(antsIn, antsOut) {
   
   twgl.setUniforms(programInfo, uniforms);
 }
+
+const vertShader = `#version 300 es
+const vec2 madd=vec2(0.5,0.5);
+in vec2 vertexIn;
+out vec2 textureCoord;
+
+uniform sampler2D u_antsIn;
+uniform sampler2D u_antsOut;
+uniform int u_antsHeight;
+uniform int u_antsWidth;
+uniform int u_antsSize;
+uniform float u_aspectRatio;
+uniform int u_screenHeight;
+
+vec2 angleToComponents(float angle) {
+  return vec2(sin(angle), cos(angle));
+}
+
+float getPixelSize() {
+  return 1.0 / float(u_screenHeight);
+}
+
+float getRoot2PixelSize() {
+  return getPixelSize() * sqrt(2.0);
+}
+
+vec2 adjustCoords(vec2 coord) {
+  return vec2(coord.x, coord.y*u_aspectRatio);
+}
+
+vec2 unadjustCoords(vec2 coord) {
+  return vec2(coord.x, coord.y/u_aspectRatio);
+}
+
+void main() {
+  int antIndex = int(vertexIn.x);
+  float textureIndex = vertexIn.y;
+  
+  // only render 128 for now
+  // TODO: make this configurable
+  if (antIndex >= 100)
+  {
+    textureCoord = vec2(-10.0, -10.0);
+    gl_Position = vec4(-10.0, -10.0, 0.0, 1.0);
+    return;
+  }
+  
+  int antXCoordIndex = antIndex/u_antsHeight;
+  float antXCoord = (0.5 + float(antXCoordIndex)) / float(u_antsWidth);
+  
+  int antYCoordIndex = antIndex%u_antsHeight;
+  float antYCoord = (0.5 + float(antYCoordIndex)) / float(u_antsHeight);
+  
+  
+  vec4 ant;
+  if (textureIndex == 0.0)
+    ant = texture(u_antsIn, vec2(antXCoord, antYCoord));
+  else
+    ant = texture(u_antsOut, vec2(antXCoord, antYCoord));
+    
+  vec2 antPos = adjustCoords(ant.rg); // adjustCoords transforms to the screen aspect ratio
+  float antAngle = ant.b;
+  float antRandSeed = ant.a;
+  
+  vec2 antAngleComponents = angleToComponents(antAngle);
+  
+  // This is a crazy hack to make sure tiny line segments are drawn. 
+  // Near-0-length line segments aren't drawn, so we want to give each line segment at least root 2 length.
+  if (textureIndex == 0.0)
+  {
+    antPos -= antAngleComponents * getRoot2PixelSize();
+  }
+  
+  // back to square
+  antPos = unadjustCoords(antPos);
+  
+  textureCoord = antPos;
+  //gl_Position = vec4((textureCoord*1.8-0.9), 0.0, 1.0); // this is the wrong thing, but for testing purposes
+  gl_Position = vec4((textureCoord*2.0-1.0), 0.0, 1.0);
+}
+`;
+
+
+const fragShader = `#version 300 es
+precision mediump float;
+in vec2 textureCoord;
+out vec4 FragColor;
+
+uniform float u_opacity;
+void main() {
+  FragColor = vec4(1, 1, 1, u_opacity);
+}
+`;

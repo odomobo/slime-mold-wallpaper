@@ -1,3 +1,5 @@
+import * as constants from './constants.js';
+import wallpaperEngine from './wallpaperEngine.js';
 
 export function draw(texture) {
   gl.useProgram(programInfo.program);
@@ -9,7 +11,7 @@ export function draw(texture) {
 
 var programInfo;
 export function init() {
-  programInfo = twgl.createProgramInfo(gl, ["render-vert", "testRender-frag"]);
+  programInfo = twgl.createProgramInfo(gl, [constants.commonVertShader, fragShader]);
   initializeFrameBufferInfo();
   initializeBuffer();
 }
@@ -47,7 +49,7 @@ function bindFrameBuffer(texture) {
 
 function setUniforms() {
   var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
-  var bgColor = wallpaper.properties.bgcolor;
+  var bgColor = wallpaperEngine.bgcolor;
   var uniforms = {
     u_aspectRatio: aspectRatio,
     u_bgColor: [.8, .8, 1, 1],
@@ -56,3 +58,26 @@ function setUniforms() {
   twgl.setUniforms(programInfo, uniforms);
 }
   
+const fragShader = `#version 300 es
+precision mediump float;
+in vec2 textureCoord;
+out vec4 FragColor;
+
+uniform float u_aspectRatio;
+uniform vec4 u_bgColor;
+void main() {
+  vec2 coord = textureCoord;
+  coord.x = coord.x * u_aspectRatio;
+  
+  bool isCorner = false;
+  isCorner = isCorner || distance(coord, vec2(0, 0)) < .1;
+  isCorner = isCorner || distance(coord, vec2(u_aspectRatio, 0)) < .1;
+  isCorner = isCorner || distance(coord, vec2(0, 1)) < .1;
+  isCorner = isCorner || distance(coord, vec2(u_aspectRatio, 1)) < .1;
+  
+  if (isCorner)
+    FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+  else
+    FragColor = u_bgColor;
+}
+`;
