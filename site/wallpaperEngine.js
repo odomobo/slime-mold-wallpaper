@@ -4,6 +4,7 @@ export var fps = constants.defaultFps;
 
 export var renderColor = constants.defaultRenderColor;
 export var brightness = constants.defaultBrightness;
+export var inverted = constants.defaultInverted;
 
 export var blurAmount = constants.defaultBlurAmount;
 export var dissipation = constants.defaultDissipation;

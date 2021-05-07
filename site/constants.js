@@ -5,6 +5,7 @@ export const antsSize = 1024*1024;
 
 export const defaultRenderColor = [0.0, 0.7, 0.0];
 export const defaultBrightness = 1.3;
+export const defaultInverted = true;
 
 export const defaultFps = 30;
 export const defaultBlurAmount = 20;

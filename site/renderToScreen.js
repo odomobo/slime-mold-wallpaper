@@ -42,6 +42,7 @@ function setUniforms(texture) {
     u_aspectRatio: aspectRatio,
     u_renderColor: [renderColor[0], renderColor[1], renderColor[2], 1],
     u_brightness: wallpaperEngine.brightness,
+    u_inverted: wallpaperEngine.inverted,
     u_texture0: texture,
   };
   
@@ -56,11 +57,15 @@ out vec4 FragColor;
 uniform float u_aspectRatio;
 uniform vec4 u_renderColor;
 uniform float u_brightness;
+uniform bool u_inverted;
 uniform sampler2D u_texture0;
 void main() {
   float value = texture(u_texture0, textureCoord).r;
   
   value = value * u_brightness;
+  
+  if (u_inverted)
+    value = 1.0 - value;
   
   if (value < 0.5) {
     float scaledValue = value*2.0;
