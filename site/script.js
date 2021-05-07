@@ -30,6 +30,7 @@ function setupWebGL(evt) {
   }
 }
 
+var firstDraw = true;
 function draw() {
   try {
     window.requestAnimationFrame(draw);
@@ -46,6 +47,13 @@ function draw() {
     renderAnts.draw(glObjects.pheremoneOut, glObjects.antsIn, glObjects.antsOut);
     //testRender.draw(glObjects.pheremoneOut);
     renderToScreen.draw(glObjects.pheremoneOut);
+    
+    if (firstDraw)
+    {
+      // this allows only one frame to be rendered on the first draw, and then it needs to wait for the next one
+      fpsThreshold = 0;
+      firstDraw = false;
+    }
     
   } catch (e) {
     err.innerHTML = e.message;

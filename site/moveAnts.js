@@ -69,6 +69,7 @@ function setUniforms(antsIn, pheremoneIn) {
     u_antsIn: antsIn,
     u_antsOut: pheremoneIn,
     u_aspectRatio: aspectRatio,
+    u_antSpeed: 0.001,
   };
   
   twgl.setUniforms(programInfo, uniforms);
@@ -80,6 +81,7 @@ in vec2 textureCoord;
 out vec4 FragColor;
 
 uniform float u_aspectRatio;
+uniform float u_antSpeed;
 uniform sampler2D u_antsIn;
 uniform sampler2D u_pheremoneIn;
 
@@ -87,12 +89,17 @@ vec2 angleToComponents(float angle) {
   return vec2(sin(angle), cos(angle));
 }
 
+float componentsToAngle(vec2 components)
+{
+  return float(atan(components.x, components.y));
+}
+
 vec2 adjustCoords(vec2 coord) {
-  return vec2(coord.x, coord.y*u_aspectRatio);
+  return vec2(coord.x*u_aspectRatio, coord.y);
 }
 
 vec2 unadjustCoords(vec2 coord) {
-  return vec2(coord.x, coord.y/u_aspectRatio);
+  return vec2(coord.x/u_aspectRatio, coord.y);
 }
 
 void main() {
@@ -104,7 +111,22 @@ void main() {
   
   vec2 antAngleComponents = angleToComponents(antAngle);
   
-  antPos += antAngleComponents * 0.001;
+  antPos += antAngleComponents * u_antSpeed;
+  
+  if (antPos.x < 0.0 && antAngleComponents.x < 0.0)
+    antAngleComponents.x *= -1.0;
+  
+  if (antPos.y < 0.0 && antAngleComponents.y < 0.0)
+    antAngleComponents.y *= -1.0;
+  
+  if (antPos.x > u_aspectRatio && antAngleComponents.x > 0.0)
+    antAngleComponents.x *= -1.0;
+  
+  if (antPos.y > 1.0 && antAngleComponents.y > 0.0)
+    antAngleComponents.y *= -1.0;
+  
+  // components back to angle
+  antAngle = componentsToAngle(antAngleComponents);
   
   // back to square
   antPos = unadjustCoords(antPos);

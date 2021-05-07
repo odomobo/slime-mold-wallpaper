@@ -47,6 +47,10 @@ function bindBuffer() {
 
 var frameBufferInfo;
 function initializeFrameBufferInfo() {
+  // TODO: currently unused; can I use this to get blending working?
+  const attachments = [
+    { format: gl.RGBA, mag: gl.LINEAR },
+  ];
   frameBufferInfo = twgl.createFramebufferInfo(gl);
 }
 
@@ -73,7 +77,7 @@ function setUniforms(antsIn, antsOut) {
   var uniforms = {
     u_antsIn: antsIn,
     u_antsOut: antsOut,
-    u_opacity: 1,
+    u_opacity: 1, // why doesnt this work?
     u_antsHeight: constants.antsHeight,
     u_antsWidth: constants.antsWidth,
     u_antsSize: constants.antsSize,
@@ -123,7 +127,7 @@ void main() {
   
   // only render 128 for now
   // TODO: make this configurable
-  if (antIndex >= 100)
+  if (antIndex >= 10000)
   {
     textureCoord = vec2(-10.0, -10.0);
     gl_Position = vec4(-10.0, -10.0, 0.0, 1.0);
