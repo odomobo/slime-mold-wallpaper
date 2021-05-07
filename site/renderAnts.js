@@ -7,12 +7,14 @@ export function draw(pheremoneOut, antsIn, antsOut) {
   setUniforms(antsIn, antsOut);
   bindBuffer();
   
-  //gl.enable(gl.BLEND);
-  //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   gl.drawArrays(gl.LINES, 0, constants.antsSize*2); // 2 points per ant is 1 line per ant
   gl.flush();
   
+  
   unbindFrameBuffer();
+  gl.disable(gl.BLEND);
 }
 
 var programInfo;
@@ -79,7 +81,7 @@ function setUniforms(antsIn, antsOut) {
   var uniforms = {
     u_antsIn: antsIn,
     u_antsOut: antsOut,
-    u_opacity: 1.0, // why doesnt this work?
+    u_opacity: 0.05,
     u_antsHeight: constants.antsHeight,
     u_antsWidth: constants.antsWidth,
     u_antsSize: constants.antsSize,
@@ -129,7 +131,7 @@ void main() {
   
   // only render 128 for now
   // TODO: make this configurable
-  if (antIndex >= 1000)
+  if (antIndex >= 100000)
   {
     textureCoord = vec2(-10.0, -10.0);
     gl_Position = vec4(-10.0, -10.0, 0.0, 1.0);
