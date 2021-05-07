@@ -145,15 +145,18 @@
     </script>
   
     <link rel="stylesheet" href="./style.css">
+    
     <script type="text/javascript" src="./twgl-full.js"></script>
-    <script type="text/javascript" src="./constants.js"></script>
-    <script type="text/javascript" src="./wallpaper.js"></script>
-    <script type="text/javascript" src="./glhelper.js"></script>
-    <script type="text/javascript" src="./glObjects.js"></script>
-    <script type="text/javascript" src="./renderToScreen.js"></script>
-    <script type="text/javascript" src="./testRender.js"></script>
-    <script type="text/javascript" src="./renderAnts.js"></script>
-    <script type="text/javascript" src="./script.js"></script>
+    
+    <script type="text/javascript">
+      // put true globals in here
+      var gl;
+    </script>
+    
+    <script type="module">
+      import './script.js';
+    </script>
+    
   </head>
   <body>
     <canvas>
