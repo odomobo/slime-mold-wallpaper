@@ -9,7 +9,9 @@ export function init() {
   var pheremoneOptions = {
     width: gl.drawingBufferWidth,
     height: gl.drawingBufferHeight,
+    internalFormat: gl.RGBA16F,
     format: gl.RGBA,
+    type: gl.HALF_FLOAT,
   };
   
   pheremoneActive = twgl.createTexture(gl, pheremoneOptions);

@@ -119,11 +119,11 @@ float getRoot2PixelSize() {
 }
 
 vec2 adjustCoords(vec2 coord) {
-  return vec2(coord.x, coord.y*u_aspectRatio);
+  return vec2(coord.x*u_aspectRatio, coord.y);
 }
 
 vec2 unadjustCoords(vec2 coord) {
-  return vec2(coord.x, coord.y/u_aspectRatio);
+  return vec2(coord.x/u_aspectRatio, coord.y);
 }
 
 void main() {
