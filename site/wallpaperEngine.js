@@ -24,6 +24,38 @@ function applyUserProperties(properties) {
     if (properties.schemecolor)
       renderColor = properties.schemecolor.value.split(" ").map(parseFloat);
     
+    if (properties.agoraphobictendrils)
+      agoraphobic = properties.agoraphobictendrils.value;
+    
+    if (properties.bluramount)
+      blurAmount = properties.bluramount.value;
+    
+    if (properties.brightness)
+      brightness = properties.brightness.value;
+    
+    if (properties.dissipation)
+      dissipation = properties.dissipation.value;
+    
+    if (properties.inverted)
+      inverted = properties.inverted.value;
+    
+    if (properties.numberoftendrils)
+      numberOfAnts = properties.numberoftendrils.value;
+    
+    if (properties.rotationspeed)
+      rotationSpeed = properties.rotationspeed.value;
+    
+    if (properties.speed)
+      antSpeed = properties.speed.value;
+    
+    if (properties.tendrilopacity)
+      antOpacity = properties.tendrilopacity.value;
+    
+    if (properties.tendrilsensorangle)
+      senseAngle = properties.tendrilsensorangle.value;
+    
+    if (properties.tendrilsensorleadseconds)
+      senseLead = properties.tendrilsensorleadseconds.value;
     
     
   } catch (e) {

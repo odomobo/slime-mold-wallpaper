@@ -45,7 +45,7 @@ function initialUpdate() {
   targetAntSpeed = wallpaperEngine.antSpeed;
   targetAntOpacity = wallpaperEngine.antOpacity;
   valueNumberOfAnts = wallpaperEngine.numberOfAnts;
-  targetAgoraphobic = wallpaperEngine.agoraphobic;
+  valueAgoraphobic = wallpaperEngine.agoraphobic;
 
   targetRotationSpeed = wallpaperEngine.rotationSpeed;
   targetSenseAngle = wallpaperEngine.senseAngle;
@@ -85,7 +85,7 @@ var targetDissipation;
 var targetAntSpeed;
 var targetAntOpacity;
 var valueNumberOfAnts;
-var targetAgoraphobic;
+var valueAgoraphobic;
 
 var targetRotationSpeed;
 var targetSenseAngle;
@@ -103,7 +103,7 @@ export function dissipationPerFrame(){return targetDissipation / valueFps;}
 export function antDistancePerFrame(){return targetAntSpeed / valueFps;} // adjust speed to speed per frame
 export function antOpacity(){return targetAntOpacity / valueFps;} // include speed calculation in here also, adjusting for minimum length of root2?
 export function numberOfAnts(){return valueNumberOfAnts;}
-export function agoraphobic(){return targetAgoraphobic;}
+export function agoraphobic(){return valueAgoraphobic;}
 
 export function rotationAnglePerFrame(){return ( targetRotationSpeed * (Math.PI/180) ) / valueFps;} // converts degrees per second into radians per frame
 export function senseAngle(){return targetSenseAngle * (Math.PI/180);} // converts degrees to radians
