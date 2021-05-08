@@ -34,18 +34,13 @@ export function update() {
 }
 
 function initialUpdate() {
-  //valueFps = wallpaperEngine.fps;
-  
   targetRenderColor = wallpaperEngine.renderColor;
   targetBrightness = wallpaperEngine.brightness;
-  //valueInverted = wallpaperEngine.inverted;
 
   targetBlurAmount = wallpaperEngine.blurAmount;
   targetDissipation = wallpaperEngine.dissipation;
   targetAntSpeed = wallpaperEngine.antSpeed;
   targetAntOpacity = wallpaperEngine.antOpacity;
-  //valueNumberOfAnts = wallpaperEngine.numberOfAnts;
-  //valueAgoraphobic = wallpaperEngine.agoraphobic;
 
   targetRotationSpeed = wallpaperEngine.rotationSpeed;
   targetSenseAngle = wallpaperEngine.senseAngle;
@@ -74,23 +69,26 @@ function ongoingUpdate() {
 }
 
 
-//var valueFps;
-
 var targetRenderColor;
 var targetBrightness;
-//var valueInverted;
 
 var targetBlurAmount;
 var targetDissipation;
 var targetAntSpeed;
 var targetAntOpacity;
-//var valueNumberOfAnts;
-//var valueAgoraphobic;
 
 var targetRotationSpeed;
 var targetSenseAngle;
 var targetSenseLead;
 
+
+export function antsTextureHeight() {
+  return Math.ceil(wallpaperEngine.numberOfAnts / constants.antsTextureWidth);
+}
+
+export function antsTextureSize() {
+  return antsTextureHeight() * constants.antsTextureWidth;
+}
 
 export function fps(){return wallpaperEngine.fps;};
 

@@ -36,11 +36,12 @@ function draw() {
     if (shouldSkipFrame())
       return;
     
+    // need to update parameters before resizing!
+    parameters.update();
+    
     // glObjects needs to be resized after glhelper!
     glhelper.resizeIfNecessary();
     glObjects.resizeIfNecessary();
-    
-    parameters.update();
     
     // each frame, we want to: 
     // 1. blur the pheremone trail, to prepare for moving the ants

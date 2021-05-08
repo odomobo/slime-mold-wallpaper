@@ -45,15 +45,15 @@ function initializeFrameBufferInfo() {
   const frameBufferAttachments = [
     { format: gl.RGBA, mag: gl.NEAREST },
   ];
-  frameBufferInfo = twgl.createFramebufferInfo(gl, frameBufferAttachments, constants.antsTextureWidth, constants.antsTextureHeight);
+  frameBufferInfo = twgl.createFramebufferInfo(gl, frameBufferAttachments, constants.antsTextureWidth, parameters.antsTextureHeight());
 }
 
 function resizeFrameBufferInfoIfNecessary() {
   const frameBufferAttachments = [
     { format: gl.RGBA, mag: gl.NEAREST },
   ];
-  if (frameBufferInfo.height != constants.antsTextureHeight)
-    twgl.resizeFramebufferInfo(gl, frameBufferInfo, frameBufferAttachments, constants.antsTextureWidth, constants.antsTextureHeight);
+  if (frameBufferInfo.height != parameters.antsTextureHeight())
+    twgl.resizeFramebufferInfo(gl, frameBufferInfo, frameBufferAttachments, constants.antsTextureWidth, parameters.antsTextureHeight());
 }
 
 function bindFrameBuffer(antsOut) {

@@ -7,11 +7,12 @@ export function draw(pheremoneOut, antsActive, antsLast) {
   
   gl.useProgram(programInfo.program);
   setUniforms(antsActive, antsLast);
+  updateBufferDataIfNecessary();
   bindBuffer();
   
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-  gl.drawArrays(gl.LINES, 0, constants.antsTextureSize*2); // 2 points per ant is 1 line per ant
+  gl.drawArrays(gl.LINES, 0, parameters.antsTextureSize()*2); // 2 points per ant is 1 line per ant
   gl.flush();
   
   
@@ -28,20 +29,27 @@ export function init() {
 
 var drawBuffer;
 function initializeBuffer() {
-  var buffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  drawBuffer = gl.createBuffer();
+  updateBufferDataIfNecessary();
+}
+
+var lastAntsTextureSize = -1;
+function updateBufferDataIfNecessary() {
+  if (lastAntsTextureSize == parameters.antsTextureSize())
+    return;
   
-  var vertices = new Float32Array(constants.antsTextureSize*4);
-  for (var i = 0; i < constants.antsTextureSize; i++) {
+  var vertices = new Float32Array(parameters.antsTextureSize()*4);
+  for (var i = 0; i < parameters.antsTextureSize(); i++) {
     for (var j = 0; j < 2; j++) {
       vertices[i*4 + j*2 + 0] = i;
       vertices[i*4 + j*2 + 1] = j;
     }
   }
   
+  gl.bindBuffer(gl.ARRAY_BUFFER, drawBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
   
-  drawBuffer = buffer;
+  lastAntsTextureSize = parameters.antsTextureSize();
 }
 
 function bindBuffer() {
@@ -89,9 +97,9 @@ function setUniforms(antsActive, antsLast) {
     u_antsActive: antsActive,
     u_antsLast: antsLast,
     u_opacity: parameters.antOpacity(),
-    u_antsHeight: constants.antsTextureHeight,
+    u_antsHeight: parameters.antsTextureHeight(),
     u_antsWidth: constants.antsTextureWidth,
-    u_antsSize: constants.antsTextureSize,
+    u_antsSize: parameters.antsTextureSize(),
     u_aspectRatio: aspectRatio,
     u_screenHeight: gl.drawingBufferHeight,
     u_numberOfAnts: parameters.numberOfAnts(),
