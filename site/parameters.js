@@ -98,7 +98,13 @@ export function renderColor(){return targetRenderColor;} // TODO: this needs to 
 export function brightness(){return targetBrightness;}
 export function inverted(){return valueInverted;}
 
-export function blurAmountPerFrame(){return targetBlurAmount / valueFps;}
+export function blurAmountPerFrame() {
+    var blurAmount = targetBlurAmount / valueFps;
+    if (blurAmount < 1)
+      return blurAmount;
+    else
+      return 1;
+}
 export function dissipationPerFrame(){return targetDissipation / valueFps;}
 export function antDistancePerFrame(){return targetAntSpeed / valueFps;} // adjust speed to speed per frame
 export function antOpacity(){return targetAntOpacity / valueFps;} // include speed calculation in here also, adjusting for minimum length of root2?

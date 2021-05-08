@@ -2,7 +2,17 @@
 
 ## Current problems
 
-Need to fix performance issues; maybe scale back number of ants for now.
+Need to fix performance issues; maybe scale back number of ants for now. I'm thinking the issues might be that all the textures are floats, so it's inherently slower.
+
+How to make opacity invariant with number of wisps?
+A. I guess scale inversely proportional to number of wisps.
+
+How to make rotation invariant with speed? 
+A. I don't think I should; their speed should influence their turning radius.
+
+How to make opacity invariant with speed? 
+A. Calculate pixel size, and then calculate average length based on that (adding root2 pixels, to correlate with fudge factor in shader).
+Then scale opacity inversely with average length.
 
 ## Overall Goal
 
@@ -18,7 +28,19 @@ Uses the web wallpaper engine, because the shaders supported by wallpaper engine
 
 ## New features I definitely want
 
-Tie all parameters from wallpaperEngine to parameter module.
+Rename "tendrils" to "wisps" in editor.
+
+Make opacity invariant with number of wisps.
+
+Make opacity invariant with speed (correct with average tendril length).
+
+Instantly adjust parameters whenever user touches them.
+
+Dynamically resize ants texture when changing number of ants; this will improve efficiency by quite a bit.
+This includes reading ant texture size through parameters module, and regenerating the ants textures
+whenever this updates from its previous size.
+
+Dynamically resizing pheremone texture whenever canvas size changes. This will work similarly to ants resize.
 
 Logic to randomly vary the parameters, based on hyper parameters:
 
@@ -27,12 +49,6 @@ Logic to randomly vary the parameters, based on hyper parameters:
 * then when that's enabled, there'll be another parameter called something like "___ Rand Amount" or something... it'll just be the other end of the scale, and it'll be random between those two points
 * scene color will have that, except it'll be hue and saturation randomness amounts, so a little different.
 * new option, "Update every x seconds", which itself can also be randomized
-
-Dynamically resize ants texture when changing number of ants; this will improve efficiency by quite a bit.
-This includes reading ant texture size through parameters module, and regenerating the ants textures
-whenever this updates from its previous size.
-
-Dynamically resizing pheremone texture whenever canvas size changes. This will work similarly to ants resize.
 
 ## Additional ideas to play around with
 
