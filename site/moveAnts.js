@@ -69,10 +69,10 @@ function setUniforms(antsActive, pheremoneActive) {
     u_antsActive: antsActive,
     u_pheremoneActive: pheremoneActive,
     u_aspectRatio: aspectRatio,
-    u_antSpeed: parameters.antSpeed() / parameters.fps(),
-    u_senseDistance: parameters.senseLead() * parameters.antSpeed(),
-    u_senseAngle: parameters.senseAngle() * (Math.PI/180),
-    u_rotationSpeed: ( parameters.rotationSpeed() * (Math.PI/180) ) / parameters.fps(), // degrees per second
+    u_antDistancePerFrame: parameters.antDistancePerFrame(),
+    u_senseDistance: parameters.senseDistance(),
+    u_senseAngle: parameters.senseAngle(),
+    u_rotationAnglePerFrame: parameters.rotationAnglePerFrame(),
     u_agoraphobic: parameters.agoraphobic(),
   };
   
@@ -85,12 +85,12 @@ in vec2 textureCoord;
 out vec4 FragColor;
 
 uniform float u_aspectRatio;
-uniform float u_antSpeed;
+uniform float u_antDistancePerFrame;
 uniform sampler2D u_antsActive;
 uniform sampler2D u_pheremoneActive;
 uniform float u_senseDistance;
 uniform float u_senseAngle;
-uniform float u_rotationSpeed;
+uniform float u_rotationAnglePerFrame;
 uniform bool u_agoraphobic;
 
 const int sensePointsCount = 9;
@@ -174,10 +174,10 @@ float getNewDirection(vec2 adjustedCoord, float direction) {
   float r = sense(adjustedCoord, u_senseDistance, direction + u_senseAngle);
   
   if (l > c && l > r)
-    return direction - u_rotationSpeed;
+    return direction - u_rotationAnglePerFrame;
   
   if (r > c)
-    return direction + u_rotationSpeed;
+    return direction + u_rotationAnglePerFrame;
   
   return direction;
 }
@@ -191,7 +191,7 @@ void main() {
   
   vec2 antAngleComponents = angleToComponents(antAngle);
   
-  antPos += antAngleComponents * u_antSpeed;
+  antPos += antAngleComponents * u_antDistancePerFrame;
   
   if (antPos.x < 0.0 && antAngleComponents.x < 0.0)
     antAngleComponents.x *= -1.0;

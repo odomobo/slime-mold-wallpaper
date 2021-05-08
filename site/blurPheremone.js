@@ -68,8 +68,8 @@ function setUniforms(pheremoneIn, passNumber) {
     u_aspectRatio: aspectRatio,
     u_passNumber: passNumber,
     u_resolution: [gl.drawingBufferWidth, gl.drawingBufferHeight],
-    u_blurAmount: parameters.blurAmount() / parameters.fps(),
-    u_dissipation: parameters.dissipation() / parameters.fps(),
+    u_blurAmount: parameters.blurAmountPerFrame(),
+    u_dissipation: parameters.dissipationPerFrame(),
   };
   
   twgl.setUniforms(programInfo, uniforms);

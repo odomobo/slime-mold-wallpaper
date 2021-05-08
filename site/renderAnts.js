@@ -77,12 +77,12 @@ function unbindFrameBuffer() {
 
 
 function setUniforms(antsActive, antsLast) {
-  var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
+  var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight; // TODO: calculate this in parameters???
   
   var uniforms = {
     u_antsActive: antsActive,
     u_antsLast: antsLast,
-    u_opacity: parameters.antOpacity() / parameters.fps(), // include speed in here also?
+    u_opacity: parameters.antOpacity(),
     u_antsHeight: constants.antsHeight,
     u_antsWidth: constants.antsWidth,
     u_antsSize: constants.antsSize,

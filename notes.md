@@ -18,10 +18,6 @@ Uses the web wallpaper engine, because the shaders supported by wallpaper engine
 
 ## New features I definitely want
 
-Add parameters module, which manages all parameters. This is the key to having randomization.
-
-Move parameter logic into parameters module.
-
 Tie all parameters from wallpaperEngine to parameter module.
 
 Logic to randomly vary the parameters, based on hyper parameters:
