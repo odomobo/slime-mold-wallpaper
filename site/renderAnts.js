@@ -1,5 +1,5 @@
 import * as constants from './constants.js';
-import * as wallpaperEngine from './wallpaperEngine.js';
+import * as parameters from './parameters.js';
 
 export function draw(pheremoneOut, antsActive, antsLast) {
   bindFrameBuffer(pheremoneOut);
@@ -82,13 +82,13 @@ function setUniforms(antsActive, antsLast) {
   var uniforms = {
     u_antsActive: antsActive,
     u_antsLast: antsLast,
-    u_opacity: wallpaperEngine.antOpacity / wallpaperEngine.fps, // include speed in here also?
+    u_opacity: parameters.antOpacity() / parameters.fps(), // include speed in here also?
     u_antsHeight: constants.antsHeight,
     u_antsWidth: constants.antsWidth,
     u_antsSize: constants.antsSize,
     u_aspectRatio: aspectRatio,
     u_screenHeight: gl.drawingBufferHeight,
-    u_numberOfAnts: wallpaperEngine.numberOfAnts,
+    u_numberOfAnts: parameters.numberOfAnts(),
   };
   
   twgl.setUniforms(programInfo, uniforms);

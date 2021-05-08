@@ -1,5 +1,5 @@
 import * as constants from './constants.js';
-import * as wallpaperEngine from './wallpaperEngine.js';
+import * as parameters from './parameters.js';
 
 export function draw(antsOut, antsActive, pheremoneActive) {
   bindFrameBuffer(antsOut);
@@ -69,11 +69,11 @@ function setUniforms(antsActive, pheremoneActive) {
     u_antsActive: antsActive,
     u_pheremoneActive: pheremoneActive,
     u_aspectRatio: aspectRatio,
-    u_antSpeed: wallpaperEngine.antSpeed / wallpaperEngine.fps,
-    u_senseDistance: wallpaperEngine.senseLead * wallpaperEngine.antSpeed,
-    u_senseAngle: wallpaperEngine.senseAngle * (Math.PI/180),
-    u_rotationSpeed: ( wallpaperEngine.rotationSpeed * (Math.PI/180) ) / wallpaperEngine.fps, // degrees per second
-    u_agoraphobic: wallpaperEngine.agoraphobic,
+    u_antSpeed: parameters.antSpeed() / parameters.fps(),
+    u_senseDistance: parameters.senseLead() * parameters.antSpeed(),
+    u_senseAngle: parameters.senseAngle() * (Math.PI/180),
+    u_rotationSpeed: ( parameters.rotationSpeed() * (Math.PI/180) ) / parameters.fps(), // degrees per second
+    u_agoraphobic: parameters.agoraphobic(),
   };
   
   twgl.setUniforms(programInfo, uniforms);

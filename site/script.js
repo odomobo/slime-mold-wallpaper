@@ -1,12 +1,11 @@
 import * as glhelper from './glhelper.js';
 import * as glObjects from './glObjects.js';
-import * as testRender from './testRender.js';
 import * as renderToScreen from './renderToScreen.js';
 import * as renderAnts from './renderAnts.js';
 import * as moveAnts from './moveAnts.js';
 import * as blurPheremone from './blurPheremone.js';
 import * as constants from './constants.js';
-import * as wallpaperEngine from './wallpaperEngine.js';
+import * as parameters from './parameters.js';
 
 function setupWebGL(evt) {
   window.removeEventListener(evt.type, setupWebGL, false);
@@ -16,8 +15,8 @@ function setupWebGL(evt) {
   try {
     gl = glhelper.getRenderingContext();
     
+    parameters.init();
     glObjects.init();
-    //testRender.init();
     blurPheremone.init();
     moveAnts.init();
     renderAnts.init();
@@ -37,6 +36,14 @@ function draw() {
     if (shouldSkipFrame())
       return;
     
+    parameters.update();
+    
+    // each frame, we want to: 
+    // 1. blur the pheremone trail, to prepare for moving the ants
+    // 2. move the ants
+    // 3. draw the ants in their new position, onto the pheremone texture
+    // 4. render the pheremone texture to the screen
+    
     blurPheremone.draw(glObjects.pheremoneTemp, glObjects.pheremoneActive, 0);
     glObjects.swapPheremone();
     blurPheremone.draw(glObjects.pheremoneTemp, glObjects.pheremoneActive, 1);
@@ -44,9 +51,9 @@ function draw() {
     
     moveAnts.draw(glObjects.antsTemp, glObjects.antsActive, glObjects.pheremoneActive);
     glObjects.swapAnts();
+    
     renderAnts.draw(glObjects.pheremoneActive, glObjects.antsActive, glObjects.antsTemp);
-    //testRender.draw(glObjects.pheremoneTemp);
-    //glObjects.swapPheremone();
+    
     renderToScreen.draw(glObjects.pheremoneActive);
     
   } catch (e) {
@@ -62,18 +69,18 @@ function shouldSkipFrame() {
   var dt = Math.min(now - last, 1);
   last = now;
   
-  if (wallpaperEngine.fps <= 0)
+  if (parameters.fps() <= 0)
     return false;
   
   fpsThreshold += dt;
-  if (fpsThreshold < 1.0 / wallpaperEngine.fps)
+  if (fpsThreshold < 1.0 / parameters.fps())
       return true;
   
-  fpsThreshold -= 1.0 / wallpaperEngine.fps;
+  fpsThreshold -= 1.0 / parameters.fps();
   
   // don't queue up frames to render
-  if (fpsThreshold > 0.9 / wallpaperEngine.fps)
-    fpsThreshold = 0.9 / wallpaperEngine.fps;
+  if (fpsThreshold > 0.9 / parameters.fps())
+    fpsThreshold = 0.9 / parameters.fps();
   
   return false;
 }

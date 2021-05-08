@@ -1,5 +1,5 @@
 import * as constants from './constants.js';
-import * as wallpaperEngine from './wallpaperEngine.js';
+import * as parameters from './parameters.js';
 
 export function draw(texture) {
   twgl.bindFramebufferInfo(gl);
@@ -37,12 +37,12 @@ function bindBuffer() {
 
 function setUniforms(texture) {
   var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
-  var renderColor = wallpaperEngine.renderColor;
+  var renderColor = parameters.renderColor();
   var uniforms = {
     u_aspectRatio: aspectRatio,
     u_renderColor: [renderColor[0], renderColor[1], renderColor[2], 1],
-    u_brightness: wallpaperEngine.brightness,
-    u_inverted: wallpaperEngine.inverted,
+    u_brightness: parameters.brightness(),
+    u_inverted: parameters.inverted(),
     u_texture0: texture,
   };
   

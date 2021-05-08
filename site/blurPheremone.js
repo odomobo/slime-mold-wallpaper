@@ -1,5 +1,5 @@
 import * as constants from './constants.js';
-import * as wallpaperEngine from './wallpaperEngine.js';
+import * as parameters from './parameters.js';
 
 export function draw(pheremoneOut, pheremoneIn, passNumber) {
   bindFrameBuffer(pheremoneOut);
@@ -68,8 +68,8 @@ function setUniforms(pheremoneIn, passNumber) {
     u_aspectRatio: aspectRatio,
     u_passNumber: passNumber,
     u_resolution: [gl.drawingBufferWidth, gl.drawingBufferHeight],
-    u_blurAmount: wallpaperEngine.blurAmount / wallpaperEngine.fps,
-    u_dissipation: wallpaperEngine.dissipation / wallpaperEngine.fps,
+    u_blurAmount: parameters.blurAmount() / parameters.fps(),
+    u_dissipation: parameters.dissipation() / parameters.fps(),
   };
   
   twgl.setUniforms(programInfo, uniforms);
