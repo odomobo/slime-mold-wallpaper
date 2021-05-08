@@ -34,18 +34,18 @@ export function update() {
 }
 
 function initialUpdate() {
-  valueFps = wallpaperEngine.fps;
+  //valueFps = wallpaperEngine.fps;
   
   targetRenderColor = wallpaperEngine.renderColor;
   targetBrightness = wallpaperEngine.brightness;
-  valueInverted = wallpaperEngine.inverted;
+  //valueInverted = wallpaperEngine.inverted;
 
   targetBlurAmount = wallpaperEngine.blurAmount;
   targetDissipation = wallpaperEngine.dissipation;
   targetAntSpeed = wallpaperEngine.antSpeed;
   targetAntOpacity = wallpaperEngine.antOpacity;
-  valueNumberOfAnts = wallpaperEngine.numberOfAnts;
-  valueAgoraphobic = wallpaperEngine.agoraphobic;
+  //valueNumberOfAnts = wallpaperEngine.numberOfAnts;
+  //valueAgoraphobic = wallpaperEngine.agoraphobic;
 
   targetRotationSpeed = wallpaperEngine.rotationSpeed;
   targetSenseAngle = wallpaperEngine.senseAngle;
@@ -74,43 +74,43 @@ function ongoingUpdate() {
 }
 
 
-var valueFps;
+//var valueFps;
 
 var targetRenderColor;
 var targetBrightness;
-var valueInverted;
+//var valueInverted;
 
 var targetBlurAmount;
 var targetDissipation;
 var targetAntSpeed;
 var targetAntOpacity;
-var valueNumberOfAnts;
-var valueAgoraphobic;
+//var valueNumberOfAnts;
+//var valueAgoraphobic;
 
 var targetRotationSpeed;
 var targetSenseAngle;
 var targetSenseLead;
 
 
-export function fps(){return valueFps;};
+export function fps(){return wallpaperEngine.fps;};
 
 export function renderColor(){return targetRenderColor;} // TODO: this needs to be more sophisticated, converting hsv to rgb
 export function brightness(){return targetBrightness;}
-export function inverted(){return valueInverted;}
+export function inverted(){return wallpaperEngine.inverted;}
 
 export function blurAmountPerFrame() {
-    var blurAmount = targetBlurAmount / valueFps;
+    var blurAmount = targetBlurAmount / wallpaperEngine.fps;
     if (blurAmount < 1)
       return blurAmount;
     else
       return 1;
 }
-export function dissipationPerFrame(){return targetDissipation / valueFps;}
-export function antDistancePerFrame(){return targetAntSpeed / valueFps;} // adjust speed to speed per frame
-export function antOpacity(){return targetAntOpacity / valueFps;} // include speed calculation in here also, adjusting for minimum length of root2?
-export function numberOfAnts(){return valueNumberOfAnts;}
-export function agoraphobic(){return valueAgoraphobic;}
+export function dissipationPerFrame(){return targetDissipation / wallpaperEngine.fps;}
+export function antDistancePerFrame(){return targetAntSpeed / wallpaperEngine.fps;} // adjust speed to speed per frame
+export function antOpacity(){return targetAntOpacity / wallpaperEngine.fps;} // include speed calculation in here also, adjusting for minimum length of root2?
+export function numberOfAnts(){return wallpaperEngine.numberOfAnts;}
+export function agoraphobic(){return wallpaperEngine.agoraphobic;}
 
-export function rotationAnglePerFrame(){return ( targetRotationSpeed * (Math.PI/180) ) / valueFps;} // converts degrees per second into radians per frame
+export function rotationAnglePerFrame(){return ( targetRotationSpeed * (Math.PI/180) ) / wallpaperEngine.fps;} // converts degrees per second into radians per frame
 export function senseAngle(){return targetSenseAngle * (Math.PI/180);} // converts degrees to radians
 export function senseDistance(){return targetSenseLead * targetAntSpeed;} // distance is lead amount * speed

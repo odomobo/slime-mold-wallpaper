@@ -2,6 +2,7 @@ import * as constants from './constants.js';
 import * as parameters from './parameters.js';
 
 export function draw(pheremoneOut, antsActive, antsLast) {
+  resizeFrameBufferInfoIfNecessary();
   bindFrameBuffer(pheremoneOut);
   
   gl.useProgram(programInfo.program);
@@ -10,7 +11,7 @@ export function draw(pheremoneOut, antsActive, antsLast) {
   
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-  gl.drawArrays(gl.LINES, 0, constants.antsSize*2); // 2 points per ant is 1 line per ant
+  gl.drawArrays(gl.LINES, 0, constants.antsTextureSize*2); // 2 points per ant is 1 line per ant
   gl.flush();
   
   
@@ -30,8 +31,8 @@ function initializeBuffer() {
   var buffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   
-  var vertices = new Float32Array(constants.antsSize*4);
-  for (var i = 0; i < constants.antsSize; i++) {
+  var vertices = new Float32Array(constants.antsTextureSize*4);
+  for (var i = 0; i < constants.antsTextureSize; i++) {
     for (var j = 0; j < 2; j++) {
       vertices[i*4 + j*2 + 0] = i;
       vertices[i*4 + j*2 + 1] = j;
@@ -59,6 +60,11 @@ function initializeFrameBufferInfo() {
   frameBufferInfo = twgl.createFramebufferInfo(gl);
 }
 
+function resizeFrameBufferInfoIfNecessary() {
+  if (frameBufferInfo.width != gl.drawingBufferWidth || frameBufferInfo.height != gl.drawingBufferHeight)
+    twgl.resizeFramebufferInfo(gl, frameBufferInfo);
+}
+
 function bindFrameBuffer(texture) {
   const attachmentPoint = gl.COLOR_ATTACHMENT0;
   const level = 0; // why??
@@ -83,9 +89,9 @@ function setUniforms(antsActive, antsLast) {
     u_antsActive: antsActive,
     u_antsLast: antsLast,
     u_opacity: parameters.antOpacity(),
-    u_antsHeight: constants.antsHeight,
-    u_antsWidth: constants.antsWidth,
-    u_antsSize: constants.antsSize,
+    u_antsHeight: constants.antsTextureHeight,
+    u_antsWidth: constants.antsTextureWidth,
+    u_antsSize: constants.antsTextureSize,
     u_aspectRatio: aspectRatio,
     u_screenHeight: gl.drawingBufferHeight,
     u_numberOfAnts: parameters.numberOfAnts(),

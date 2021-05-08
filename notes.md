@@ -28,8 +28,6 @@ Uses the web wallpaper engine, because the shaders supported by wallpaper engine
 
 ## New features I definitely want
 
-Rename "tendrils" to "wisps" in editor.
-
 Make opacity invariant with number of wisps.
 
 Make opacity invariant with speed (correct with average tendril length).
@@ -40,8 +38,6 @@ Dynamically resize ants texture when changing number of ants; this will improve 
 This includes reading ant texture size through parameters module, and regenerating the ants textures
 whenever this updates from its previous size.
 
-Dynamically resizing pheremone texture whenever canvas size changes. This will work similarly to ants resize.
-
 Logic to randomly vary the parameters, based on hyper parameters:
 
 * there'll be a master parameter called "Enable Randomness" or something
@@ -49,6 +45,8 @@ Logic to randomly vary the parameters, based on hyper parameters:
 * then when that's enabled, there'll be another parameter called something like "___ Rand Amount" or something... it'll just be the other end of the scale, and it'll be random between those two points
 * scene color will have that, except it'll be hue and saturation randomness amounts, so a little different.
 * new option, "Update every x seconds", which itself can also be randomized
+
+Update webpack build to do everything for me - no manual steps. Have bea help with that.
 
 ## Additional ideas to play around with
 

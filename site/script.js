@@ -36,6 +36,10 @@ function draw() {
     if (shouldSkipFrame())
       return;
     
+    // glObjects needs to be resized after glhelper!
+    glhelper.resizeIfNecessary();
+    glObjects.resizeIfNecessary();
+    
     parameters.update();
     
     // each frame, we want to: 

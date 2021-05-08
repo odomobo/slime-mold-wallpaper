@@ -2,6 +2,7 @@ import * as constants from './constants.js';
 import * as parameters from './parameters.js';
 
 export function draw(antsOut, antsActive, pheremoneActive) {
+  resizeFrameBufferInfoIfNecessary();
   bindFrameBuffer(antsOut);
   
   gl.useProgram(programInfo.program);
@@ -41,10 +42,18 @@ function bindBuffer() {
 
 var frameBufferInfo;
 function initializeFrameBufferInfo() {
-  const attachments = [
+  const frameBufferAttachments = [
     { format: gl.RGBA, mag: gl.NEAREST },
   ];
-  frameBufferInfo = twgl.createFramebufferInfo(gl, attachments, constants.antsWidth, constants.antsHeight);
+  frameBufferInfo = twgl.createFramebufferInfo(gl, frameBufferAttachments, constants.antsTextureWidth, constants.antsTextureHeight);
+}
+
+function resizeFrameBufferInfoIfNecessary() {
+  const frameBufferAttachments = [
+    { format: gl.RGBA, mag: gl.NEAREST },
+  ];
+  if (frameBufferInfo.height != constants.antsTextureHeight)
+    twgl.resizeFramebufferInfo(gl, frameBufferInfo, frameBufferAttachments, constants.antsTextureWidth, constants.antsTextureHeight);
 }
 
 function bindFrameBuffer(antsOut) {

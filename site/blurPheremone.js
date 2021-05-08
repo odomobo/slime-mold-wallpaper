@@ -2,6 +2,7 @@ import * as constants from './constants.js';
 import * as parameters from './parameters.js';
 
 export function draw(pheremoneOut, pheremoneIn, passNumber) {
+  resizeFrameBufferInfoIfNecessary();
   bindFrameBuffer(pheremoneOut);
   
   gl.useProgram(programInfo.program);
@@ -41,6 +42,11 @@ function bindBuffer() {
 var frameBufferInfo;
 function initializeFrameBufferInfo() {
   frameBufferInfo = twgl.createFramebufferInfo(gl);
+}
+
+function resizeFrameBufferInfoIfNecessary() {
+  if (frameBufferInfo.width != gl.drawingBufferWidth || frameBufferInfo.height != gl.drawingBufferHeight)
+    twgl.resizeFramebufferInfo(gl, frameBufferInfo);
 }
 
 function bindFrameBuffer(texture) {
