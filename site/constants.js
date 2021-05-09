@@ -1,16 +1,16 @@
 
 export const antsTextureWidth = 1024;
 
-export const defaultRenderColor = [0.0, 0.7, 0.0];
-export const defaultBrightness = 1.3;
-export const defaultInverted = true;
+export const defaultRenderColor = [0.40, 0.50, 0.56];
+export const defaultBrightness = 1.0;
+export const defaultInverted = false;
 
 export const defaultFps = 30;
 export const defaultBlurAmount = 20;
-export const defaultDissipation = 0.09;
+export const defaultDissipation = 0.5;
 export const defaultAntSpeed = 0.15;
-export const defaultAntOpacity = 0.08;
-export const defaultNumberOfAnts = 2000000;
+export const defaultAntOpacity = 2;
+export const defaultNumberOfAnts = 100000;
 export const defaultAgoraphobic = false;
 
 export const defaultRotationSpeed = 180;

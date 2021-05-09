@@ -146,6 +146,7 @@ void main() {
   int antIndex = int(vertexIn.x);
   float textureIndex = vertexIn.y;
   
+  // don't draw any more ants than the user requested
   if (antIndex >= u_numberOfAnts)
   {
     textureCoord = vec2(-10.0, -10.0);

@@ -105,7 +105,13 @@ export function blurAmountPerFrame() {
 }
 export function dissipationPerFrame(){return targetDissipation / wallpaperEngine.fps;}
 export function antDistancePerFrame(){return targetAntSpeed / wallpaperEngine.fps;} // adjust speed to speed per frame
-export function antOpacity(){return targetAntOpacity / wallpaperEngine.fps;} // include speed calculation in here also, adjusting for minimum length of root2?
+
+// We want antOpacity to be invariant to frame rate, resolution, number of ants, and speed.
+// TODO: include speed calculation in here also, adjusting for minimum length of root2?
+export function antOpacity() {
+  return 1.0
+  //return targetAntOpacity / wallpaperEngine.fps;
+}
 export function numberOfAnts(){return wallpaperEngine.numberOfAnts;}
 export function agoraphobic(){return wallpaperEngine.agoraphobic;}
 
