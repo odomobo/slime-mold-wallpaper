@@ -6,15 +6,15 @@ export const defaultBrightness = 1.0;
 export const defaultInverted = false;
 
 export const defaultFps = 30;
-export const defaultBlurAmount = 0.5;
-export const defaultDissipation = 0.05;
+export const defaultBlurAmount = 1.0;
+export const defaultDissipation = 0.15;
 export const defaultAntSpeed = 0.10;
-export const defaultAntOpacity = 2;
-export const defaultNumberOfAnts = 1000;
+export const defaultAntOpacity = 3;
+export const defaultNumberOfAnts = 10000;
 export const defaultAgoraphobic = true;
 
-export const defaultRotationSpeed = 45;
-export const defaultSenseAngle = 15;
+export const defaultRotationSpeed = 60;
+export const defaultSenseAngle = 30;
 export const defaultSenseLead = 0.30;
 
   

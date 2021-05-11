@@ -2,11 +2,11 @@
 
 ## TODOs
 
-Control edge behavior through constants in move ants shader
+What to do with edges? Maybe 2 modes, either bounce or edge wrap. Then we can have renderAnts not render if the distance is greater than 0.5 or something crazy like that.
+I don't like the edge avoidance algorithm... seems pretty unimpressive, because it just makes a border around the window.
 
-Use randomization to make wisps turn for a random number of frames.
-Agoraphobia increases the chance that the wisps will turn when in a dense area, as measured by the max brightness.
-This will allow them to create new tendrils, instead of making lanes.
+Agoraphobia shouldn't even be an option; should just be hardcoded. It's basically required when wisps are additive instead of blending.
+Or maybe when disabling agoraphobia, we should also change to blend instead of additive.
 
 Dissipation and opacity are inversely related; maybe control the ratio with 1 parameter, and the screen brightness with another. 
 I think that would give better control. How should I name it? Maybe "Screen Density" and "Wisp Trail Length"?
@@ -15,7 +15,7 @@ How to make opacity invariant with number of wisps?
 A. I guess scale inversely proportional to number of wisps.
 
 How to make opacity invariant with speed? 
-A. Calculate pixel size, and then calculate average length based on that (adding root2 pixels, to correlate with fudge factor in shader).
+A. Calculate pixel size, and then calculate average length based on that.
 Then scale opacity inversely with average length.
 
 How to make opacity invariant with screen resolution?

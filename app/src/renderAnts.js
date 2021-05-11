@@ -11,7 +11,8 @@ export function draw(pheremoneOut, antsActive, antsLast) {
   bindBuffer();
   
   gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); // normal blending
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE); // attitive blending
   gl.drawArrays(gl.LINES, 0, parameters.antsTextureSize()*2); // 2 points per ant is 1 line per ant
   gl.flush();
   
@@ -153,14 +154,6 @@ void storeAntVariables(vec4 ant) {
   antRandomSeed = floatBitsToUint(ant.a);
 }
 
-float getPixelSize() {
-  return 1.0 / float(u_screenHeight);
-}
-
-float getRoot2PixelSize() {
-  return getPixelSize() * sqrt(2.0);
-}
-
 void main() {
   int antIndex = int(vertexIn.x);
   float textureIndex = vertexIn.y;
@@ -184,15 +177,6 @@ void main() {
     storeAntVariables(texture(u_antsActive, vec2(antXCoord, antYCoord)));
   else
     storeAntVariables(texture(u_antsLast, vec2(antXCoord, antYCoord)));
-  
-  vec2 antAngleComponents = angleToComponents(antAngle);
-  
-  // This is a crazy hack to make sure tiny line segments are drawn. 
-  // Near-0-length line segments aren't drawn, so we want to give each line segment at least root 2 length.
-  if (textureIndex == 1.0)
-  {
-    antPos -= antAngleComponents * getRoot2PixelSize();
-  }
   
   // back to square when setting the position
   textureCoord = unadjustCoords(antPos);

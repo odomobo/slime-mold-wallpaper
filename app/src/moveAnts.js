@@ -83,6 +83,7 @@ function setUniforms(antsActive, pheremoneActive) {
     u_senseAngle: parameters.senseAngle(),
     u_rotationAnglePerFrame: parameters.rotationAnglePerFrame(),
     u_agoraphobic: parameters.agoraphobic(),
+    u_fps: parameters.fps(),
   };
   
   twgl.setUniforms(programInfo, uniforms);
@@ -101,17 +102,19 @@ uniform float u_senseDistance;
 uniform float u_senseAngle;
 uniform float u_rotationAnglePerFrame;
 uniform bool u_agoraphobic;
+uniform int u_fps;
 
 const float PI = 3.1415926535897932384626433832795;
 const float TAU = PI*2.0;
-const float MAX_BOUNCE_ANGLE = 45.0;
+const float MAX_BOUNCE_ANGLE = 80.0;
 const float MAX_BOUNCE_ANGLE_RAD = MAX_BOUNCE_ANGLE * (TAU / 360.0);
 
 // hardcoded parameters
 const int sensePointsCount = 9;
-const float agoraphobiaThreshold = 0.75;
+const float agoraphobiaThreshold = 1.0;
 const bool wallAvoidance = false;
 const bool doRandomBounce = true;
+const float agoraphobiaPercentagePerSecond = 1000.0;
 
 // ant variables; see documentation.md to see how these are stored in the texture.
 vec2 antPos; // always the adjusted value
@@ -207,25 +210,23 @@ float senseCircle(vec2 adjustedCenterCoord, float radius)
   return ret / float(sensePointsCount); // return the average
 }
 
-// if a sensor gets senseDistance + senseCircleRadius from the edge, then let's interpolate it down to 0
-float reduceSenseNearEdge(float value, vec2 adjustedCoord) {
-  float minDistance = 1.0;
-  minDistance = min(minDistance, adjustedCoord.x - 0.0);
-  minDistance = min(minDistance, adjustedCoord.y - 0.0);
-  minDistance = min(minDistance, u_aspectRatio - adjustedCoord.x);
-  minDistance = min(minDistance, 1.0 - adjustedCoord.y);
+float reductionIfUnder(float minDistance, float actualDistance)
+{
+  if (actualDistance > minDistance)
+    return 0.0;
   
-  float scaledDistance = minDistance / (u_senseDistance + senseCircleRadius());
-  scaledDistance = clamp(scaledDistance, 0.0, 1.0);
-  
-  return value * scaledDistance;
+  float unscaledReductionAmount = minDistance - actualDistance;
+  return clamp(unscaledReductionAmount / minDistance, 0.0, 1.0) * 100.0; // TODO: parameterize
 }
 
-float adjustSenseAgoraphobia(float value) {
-  if (value <= agoraphobiaThreshold)
-    return value;
-  else
-    return clamp(agoraphobiaThreshold + (agoraphobiaThreshold-value), 0.0, 1.0);
+// if a sensor gets senseDistance + senseCircleRadius from the edge, then let's interpolate it down to 0
+float reduceSenseNearEdge(float value, vec2 adjustedCoord) {
+  float minDistance = 0.1; // TODO: parameterize
+  value -= reductionIfUnder(minDistance, adjustedCoord.x - 0.0);
+  value -= reductionIfUnder(minDistance, adjustedCoord.y - 0.0);
+  value -= reductionIfUnder(minDistance, u_aspectRatio - adjustedCoord.x);
+  value -= reductionIfUnder(minDistance, 1.0 - adjustedCoord.y);
+  return value;
 }
 
 float sense(vec2 adjustedCoord, float distance, float angle) {
@@ -234,18 +235,34 @@ float sense(vec2 adjustedCoord, float distance, float angle) {
   //return texture(u_pheremoneActive, unadjustCoords(adjustedCoord)).r;
   float sensedValue = senseCircle(adjustedCoord, senseCircleRadius());
   
-  if (u_agoraphobic)
-    sensedValue = adjustSenseAgoraphobia(sensedValue);
   if (wallAvoidance)
     sensedValue = reduceSenseNearEdge(sensedValue, adjustedCoord);
   
   return sensedValue;
 }
 
-float getNewDirection(vec2 adjustedCoord, float direction) {
+void setRandomAgoraphobiaDuration() {
+  uint added = 0u;
+  if (getRandomFloat() > .5)
+    added = 100u; // TODO: parameterize
+  
+  antState = uint(getRandomFloat(1.0, float(u_fps/2))) + added; // TODO: parameterize
+}
+
+void checkAgoraphobia(float sensed) {
+  if (sensed < agoraphobiaThreshold)
+    return;
+  
+  setRandomAgoraphobiaDuration();
+}
+
+float senseForDirection(vec2 adjustedCoord, float direction) {
   float c = sense(adjustedCoord, u_senseDistance, direction);
   float l = sense(adjustedCoord, u_senseDistance, direction - u_senseAngle);
   float r = sense(adjustedCoord, u_senseDistance, direction + u_senseAngle);
+  
+  if (u_agoraphobic)
+    checkAgoraphobia( max(c, max(l, r)) );
   
   if (l > c && l > r)
     return direction - u_rotationAnglePerFrame;
@@ -303,6 +320,23 @@ void randomBounce() {
   }
 }
 
+bool isInState() {
+  if (antState == 100u) // TODO: parameterize
+    antState = 0u;
+  
+  return antState > 0u;
+}
+
+float getDirectionFromState() {
+  antState -= 1u;
+  
+  float rotationDirection = 1.0;
+  if (antState >= 100u) // TODO: parameterize
+    rotationDirection = -1.0;
+  
+  return antAngle + u_rotationAnglePerFrame*rotationDirection;
+}
+
 void main() {
   storeAntVariables(texture(u_antsActive, textureCoord));
   
@@ -315,7 +349,10 @@ void main() {
   else
     physicalBounce();
   
-  antAngle = getNewDirection(antPos, antAngle);
+  if (!isInState())
+    antAngle = senseForDirection(antPos, antAngle);
+  else
+    antAngle = getDirectionFromState();
   
   
   FragColor = retrieveAntVariables();
