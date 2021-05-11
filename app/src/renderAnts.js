@@ -122,16 +122,16 @@ uniform float u_aspectRatio;
 uniform int u_screenHeight;
 uniform int u_numberOfAnts;
 
+const float PI = 3.1415926535897932384626433832795;
+
+// ant variables; see documentation.md to see how these are stored in the texture.
+vec2 antPos; // always the adjusted value
+uint antState;
+float antAngle;
+uint antRandomSeed;
+
 vec2 angleToComponents(float angle) {
   return vec2(sin(angle), cos(angle));
-}
-
-float getPixelSize() {
-  return 1.0 / float(u_screenHeight);
-}
-
-float getRoot2PixelSize() {
-  return getPixelSize() * sqrt(2.0);
 }
 
 vec2 adjustCoords(vec2 coord) {
@@ -140,6 +140,25 @@ vec2 adjustCoords(vec2 coord) {
 
 vec2 unadjustCoords(vec2 coord) {
   return vec2(coord.x/u_aspectRatio, coord.y);
+}
+
+void storeAntVariables(vec4 ant) {
+  antPos = adjustCoords(ant.rg); // adjustCoords transforms to the screen aspect ratio
+  float antStateF;
+  antAngle = modf(ant.b, antStateF)*2.0*PI;
+  // make sure this is from 0 to 1
+  if (antAngle < 0.0)
+    antAngle += 1.0;
+  antState = uint(antStateF);
+  antRandomSeed = floatBitsToUint(ant.a);
+}
+
+float getPixelSize() {
+  return 1.0 / float(u_screenHeight);
+}
+
+float getRoot2PixelSize() {
+  return getPixelSize() * sqrt(2.0);
 }
 
 void main() {
@@ -161,15 +180,10 @@ void main() {
   float antYCoord = (0.5 + float(antYCoordIndex)) / float(u_antsHeight);
   
   
-  vec4 ant;
   if (textureIndex == 0.0)
-    ant = texture(u_antsActive, vec2(antXCoord, antYCoord));
+    storeAntVariables(texture(u_antsActive, vec2(antXCoord, antYCoord)));
   else
-    ant = texture(u_antsLast, vec2(antXCoord, antYCoord));
-    
-  vec2 antPos = adjustCoords(ant.rg); // adjustCoords transforms to the screen aspect ratio
-  float antAngle = ant.b;
-  float antRandSeed = ant.a;
+    storeAntVariables(texture(u_antsLast, vec2(antXCoord, antYCoord)));
   
   vec2 antAngleComponents = angleToComponents(antAngle);
   
@@ -180,11 +194,8 @@ void main() {
     antPos -= antAngleComponents * getRoot2PixelSize();
   }
   
-  // back to square
-  antPos = unadjustCoords(antPos);
-  
-  textureCoord = antPos;
-  //gl_Position = vec4((textureCoord*1.8-0.9), 0.0, 1.0); // this is the wrong thing, but for testing purposes
+  // back to square when setting the position
+  textureCoord = unadjustCoords(antPos);
   gl_Position = vec4((textureCoord*2.0-1.0), 0.0, 1.0);
 }
 `;

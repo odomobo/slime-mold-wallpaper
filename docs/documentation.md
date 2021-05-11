@@ -23,10 +23,19 @@ glObjects.js will store textures and buffers.
 
 =============
 
-We'll have the following textures:
+Well have the following textures:
 
-antsIn and antsOut, which are 4 channels per pixel, with a float32 per channel. 
-No mipmapping, and sampling for nearest. r,g,b,a will be x,y,angle,rndseed. antsIn will be init to random noise on each channel.
+antsIn and antsOut, which are 4 channels per pixel, with a float32 per channel:
+
+{
+  r: the x coordinate on the screen, scaled from 0 to 1. To make the coords square, this should be multiplied by the aspect ratio.
+  g: the y coordinate on the screen, scaled from 0 to 1.
+  b: The floating point of this is the angle, scaled from 0 to 1 (exclusive). To turn this into the angle, it should be multiplied by 2pi.
+     If the number is negative, then 1 needs to be added to the floating point value to bring it between 0 and 1.
+     The whole part of this is a state value, which can be used for any purpose needed for ant logic. This should be 0 for normal operation.
+  a: The random seed. This is a uint32, so it needs a reinterpret cast to get from float to int and back.
+}
+No mipmapping, and sampling for nearest. The values will be init to random noise on each channel from 0 to 1.
 
 pheremonesIn and pheremonesOut, which are grayscale at 8 bits per pixel. There should be mipmapping on this. Sampling linear.
 pheremonesIn will be init to black.

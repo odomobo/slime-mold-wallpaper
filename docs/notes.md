@@ -2,6 +2,8 @@
 
 ## TODOs
 
+Control edge behavior through constants in move ants shader
+
 Use randomization to make wisps turn for a random number of frames.
 Agoraphobia increases the chance that the wisps will turn when in a dense area, as measured by the max brightness.
 This will allow them to create new tendrils, instead of making lanes.
@@ -86,3 +88,8 @@ Teleporting has the problem that it mustn't leave streaks across the screen... h
 Foreground and background color?
 
 Foreground and background images????
+
+## Mentions
+
+Jam3, https://github.com/Jam3/glsl-fast-gaussian-blur
+Sebastian Lague, https://github.com/SebLague/Slime-Simulation/
