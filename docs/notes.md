@@ -8,6 +8,8 @@ I don't like the edge avoidance algorithm... seems pretty unimpressive, because 
 Agoraphobia shouldn't even be an option; should just be hardcoded. It's basically required when wisps are additive instead of blending.
 Or maybe when disabling agoraphobia, we should also change to blend instead of additive.
 
+Or maybe, agoraphobia logic can be like: if too bright, then teleport to random location. Don't render if the distance is greater than length + fudge factor.
+
 Dissipation and opacity are inversely related; maybe control the ratio with 1 parameter, and the screen brightness with another. 
 I think that would give better control. How should I name it? Maybe "Screen Density" and "Wisp Trail Length"?
 

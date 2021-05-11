@@ -112,10 +112,12 @@ function setUniforms(antsActive, antsLast) {
 const vertShader = `#version 300 es
 const vec2 madd=vec2(0.5,0.5);
 in vec2 vertexIn;
+out float adjustedOpacity;
 out vec2 textureCoord;
 
 uniform sampler2D u_antsActive;
 uniform sampler2D u_antsLast;
+uniform float u_opacity;
 uniform int u_antsHeight;
 uniform int u_antsWidth;
 uniform int u_antsSize;
@@ -154,6 +156,14 @@ void storeAntVariables(vec4 ant) {
   antRandomSeed = floatBitsToUint(ant.a);
 }
 
+float adjustOpacity(float opacity, float angle)
+{
+  //return opacity;
+  vec2 components = angleToComponents(angle);
+  float maxComponent = max(abs(components.x), abs(components.y));
+  return opacity / maxComponent; // max component determines how many pixels are drawn; we want the inverse of this for opacity
+}
+
 void main() {
   int antIndex = int(vertexIn.x);
   float textureIndex = vertexIn.y;
@@ -178,6 +188,8 @@ void main() {
   else
     storeAntVariables(texture(u_antsLast, vec2(antXCoord, antYCoord)));
   
+  adjustedOpacity = adjustOpacity(u_opacity, antAngle);
+  
   // back to square when setting the position
   textureCoord = unadjustCoords(antPos);
   gl_Position = vec4((textureCoord*2.0-1.0), 0.0, 1.0);
@@ -187,11 +199,12 @@ void main() {
 
 const fragShader = `#version 300 es
 precision mediump float;
+in float adjustedOpacity;
 in vec2 textureCoord;
 out vec4 FragColor;
 
-uniform float u_opacity;
+
 void main() {
-  FragColor = vec4(1, 1, 1, u_opacity);
+  FragColor = vec4(1, 1, 1, adjustedOpacity);
 }
 `;

@@ -65,5 +65,8 @@ Takes antsIn and antsOut as uniforms to the vert shader. Simple frag shader draw
 Vert shader uses y to determine if antsIn or antsOut (0 or 1), and then x to determine lookup into the
 appropriate texture. Uses r and g from the ants texture to pass as coords to the frag shader.
 
+It's important that we use opacity that adjusts for angle. If an angle has components x and y, then the longest of those will determine the number of pixels drawn.
+We adjust for that by increasing the opacity.
+
 ### Render to screen
 render pheremonesOut to screen, with a quad write. Use a color mapping to make it look interesting.
