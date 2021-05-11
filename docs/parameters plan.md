@@ -30,5 +30,21 @@ angle) the wisps will have more individuality and can be more interesting.
 
 Too bright or too dark can be solved by #1 (because then screen density is its own parameter).
 
+==================================================
 
+For #1, I need to pick some parameters, and figure out what they affect. I then need to plot each of them to the 
+parameters they affect, which will tell me if any parameters can't be affected.
 
+Density: Affects opacity; influenced by tendril length (related to speed), count, screen size, dissipation
+
+Trail length: Affects dissipation, which in turn affects density (to preserve the density on the screen). Influenced by speed.
+
+Scale: Affects speed, turning radius, lookahead distance (but not lookahead time), blur, trail length
+
+Blur: Affects blur
+
+Speed: Affects speed, but not lookahead distance. Sense angle to turning speed ratio is preserved.
+
+Sense Bias (or: indivduality? defiance?): affects sense angle, to adjust the ratio between sense angle and turning speed.
+
+I guess lookahead time can be fixed for now.

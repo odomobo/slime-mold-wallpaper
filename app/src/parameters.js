@@ -109,8 +109,8 @@ export function antDistancePerFrame(){return targetAntSpeed / wallpaperEngine.fp
 // We want antOpacity to be invariant to frame rate, resolution, number of ants, and speed.
 // TODO: include speed calculation in here also, adjusting for minimum length of root2?
 export function antOpacity() {
-  return 1.0
-  //return targetAntOpacity / wallpaperEngine.fps;
+  //return 1.0
+  return targetAntOpacity / wallpaperEngine.fps;
 }
 export function numberOfAnts(){return wallpaperEngine.numberOfAnts;}
 export function agoraphobic(){return wallpaperEngine.agoraphobic;}

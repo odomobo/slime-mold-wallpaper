@@ -1,0 +1,146 @@
+{
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"agoraphobictendrils" : 
+			{
+				"index" : 7,
+				"order" : 107,
+				"text" : "Agoraphobic Wisps",
+				"type" : "bool",
+				"value" : false
+			},
+			"bluramount" : 
+			{
+				"fraction" : true,
+				"index" : 2,
+				"max" : 100,
+				"min" : 0,
+				"order" : 102,
+				"precision" : 2,
+				"step" : 0.10000000000000001,
+				"text" : "Blur Amount",
+				"type" : "slider",
+				"value" : 20
+			},
+			"brightness" : 
+			{
+				"fraction" : true,
+				"index" : 0,
+				"max" : 2,
+				"min" : 0,
+				"order" : 100,
+				"precision" : 3,
+				"step" : 0.010000000000000002,
+				"text" : "Brightness",
+				"type" : "slider",
+				"value" : 1.3
+			},
+			"dissipation" : 
+			{
+				"fraction" : true,
+				"index" : 3,
+				"max" : 1,
+				"min" : 0,
+				"order" : 103,
+				"precision" : 3,
+				"step" : 0.010000000000000002,
+				"text" : "Dissipation",
+				"type" : "slider",
+				"value" : 0.089999999999999997
+			},
+			"inverted" : 
+			{
+				"index" : 1,
+				"order" : 101,
+				"text" : "Inverted",
+				"type" : "bool",
+				"value" : false
+			},
+			"numberoftendrils" : 
+			{
+				"fraction" : false,
+				"index" : 6,
+				"max" : 1000000,
+				"min" : 1,
+				"order" : 106,
+				"text" : "Number of Wisps",
+				"type" : "slider",
+				"value" : 100000
+			},
+			"rotationspeed" : 
+			{
+				"fraction" : false,
+				"index" : 8,
+				"max" : 1080,
+				"min" : 0,
+				"order" : 108,
+				"text" : "Rotation Speed",
+				"type" : "slider",
+				"value" : 180
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0.47843137254901963 0.47843137254901963 0.47843137254901963"
+			},
+			"speed" : 
+			{
+				"fraction" : true,
+				"index" : 4,
+				"max" : 0.5,
+				"min" : 0,
+				"order" : 104,
+				"precision" : 3,
+				"step" : 0.010000000000000002,
+				"text" : "Speed",
+				"type" : "slider",
+				"value" : 0.14999999999999999
+			},
+			"tendrilopacity" : 
+			{
+				"fraction" : true,
+				"index" : 5,
+				"max" : 1,
+				"min" : 0,
+				"order" : 105,
+				"precision" : 3,
+				"step" : 0.010000000000000002,
+				"text" : "Wisp Opacity",
+				"type" : "slider",
+				"value" : 0.080000000000000002
+			},
+			"tendrilsensorangle" : 
+			{
+				"fraction" : false,
+				"index" : 9,
+				"max" : 60,
+				"min" : 1,
+				"order" : 109,
+				"text" : "Wisp Sensor Angle",
+				"type" : "slider",
+				"value" : 40
+			},
+			"tendrilsensorleadseconds" : 
+			{
+				"fraction" : true,
+				"index" : 10,
+				"max" : 2,
+				"min" : 0.01,
+				"order" : 110,
+				"precision" : 3,
+				"step" : 0.010000000000000002,
+				"text" : "Wisp Sensor Lead Seconds",
+				"type" : "slider",
+				"value" : 0.050000000000000003
+			}
+		}
+	},
+	"title" : "slime mold",
+	"type" : "web",
+	"version" : 0
+}

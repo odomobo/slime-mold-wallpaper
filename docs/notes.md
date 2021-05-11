@@ -2,7 +2,9 @@
 
 ## TODOs
 
-Figure out good project structure (bea can help).
+Use randomization to make wisps turn for a random number of frames.
+Agoraphobia increases the chance that the wisps will turn when in a dense area, as measured by the max brightness.
+This will allow them to create new tendrils, instead of making lanes.
 
 Dissipation and opacity are inversely related; maybe control the ratio with 1 parameter, and the screen brightness with another. 
 I think that would give better control. How should I name it? Maybe "Screen Density" and "Wisp Trail Length"?
