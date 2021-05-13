@@ -90,7 +90,9 @@ function setUniforms(antsActive, pheremoneActive) {
 }
   
 const fragShader = `#version 300 es
-precision mediump float;
+precision mediump float;` +
+constants.commonShaderLibrary +
+`
 in vec2 textureCoord;
 out vec4 FragColor;
 
@@ -104,90 +106,19 @@ uniform float u_rotationAnglePerFrame;
 uniform bool u_agoraphobic;
 uniform int u_fps;
 
-const float PI = 3.1415926535897932384626433832795;
-const float TAU = PI*2.0;
 const float MAX_BOUNCE_ANGLE = 80.0;
 const float MAX_BOUNCE_ANGLE_RAD = MAX_BOUNCE_ANGLE * (TAU / 360.0);
 
 // hardcoded parameters
 const int sensePointsCount = 9;
 const float agoraphobiaThreshold = 1.0;
+const bool teleportOnAgoraphobia = false;
+const bool wallWrapping = false;
 const bool wallAvoidance = false;
-const bool doRandomBounce = true;
-const float agoraphobiaPercentagePerSecond = 1000.0;
+const bool doRandomBounce = false;
 
-// ant variables; see documentation.md to see how these are stored in the texture.
-vec2 antPos; // always the adjusted value
-uint antState;
-float antAngle;
-uint antRandomSeed;
-
-vec2 angleToComponents(float angle) {
-  return vec2(sin(angle), cos(angle));
-}
-
-float componentsToAngle(vec2 components) {
-  return float(atan(components.x, components.y));
-}
-
-vec2 adjustCoords(vec2 coord) {
-  return vec2(coord.x*u_aspectRatio, coord.y);
-}
-
-vec2 unadjustCoords(vec2 coord) {
-  return vec2(coord.x/u_aspectRatio, coord.y);
-}
-
-void storeAntVariables(vec4 ant) {
-  antPos = adjustCoords(ant.rg); // adjustCoords transforms to the screen aspect ratio
-  float antStateF;
-  antAngle = modf(ant.b, antStateF)*TAU;
-  // make sure this is from 0 to 1
-  if (antAngle < 0.0)
-    antAngle += 1.0;
-  antState = uint(antStateF);
-  antRandomSeed = floatBitsToUint(ant.a);
-}
-
-vec4 retrieveAntVariables() {
-  float angleNormalized = antAngle/TAU;
-  float _;
-  angleNormalized = modf(angleNormalized, _);
-  
-  // make sure this is from 0 to 1
-  if (angleNormalized < 0.0)
-    angleNormalized += 1.0;
-  
-  return vec4(unadjustCoords(antPos), float(antState) + angleNormalized, uintBitsToFloat(antRandomSeed));
-}
-
-// Hash function www.cs.ubc.ca/~rbridson/docs/schechter-sca08-turbulence.pdf
-uint hash(uint state)
-{
-    state ^= 2747636419u;
-    state *= 2654435769u;
-    state ^= state >> 16;
-    state *= 2654435769u;
-    state ^= state >> 16;
-    state *= 2654435769u;
-    return state;
-}
-
-// [0, 2^32)
-uint getRandomInt() {
-  antRandomSeed = hash(antRandomSeed);
-  return antRandomSeed;
-}
-
-// [0.0, 1.0)
-float getRandomFloat() {
-  return float(getRandomInt() % uint(1<<24)) / float(1<<24);
-}
-
-float getRandomFloat(float min, float max) {
-  //return min + getRandomFloat()*(max-min);
-  return mix(min, max, getRandomFloat());
-}
+Ant ant;
+bool sensedAgoraphobia = false;
 
 float senseCircleRadius() {
   float senseDiameter = sin(u_senseAngle) * u_senseDistance; // the rough distance between sense points
@@ -203,7 +134,7 @@ float senseCircle(vec2 adjustedCenterCoord, float radius)
     float angle = anglePercentage * TAU;
     vec2 angleComponents = angleToComponents(angle);
     vec2 adjustedSenseCoord = adjustedCenterCoord + angleComponents*radius;
-    float val = texture(u_pheremoneActive, unadjustCoords(adjustedSenseCoord)).r;
+    float val = texture(u_pheremoneActive, unadjustCoords(adjustedSenseCoord, u_aspectRatio)).r;
     //ret = max(ret, val);
     ret += val;
   }
@@ -232,28 +163,24 @@ float reduceSenseNearEdge(float value, vec2 adjustedCoord) {
 float sense(vec2 adjustedCoord, float distance, float angle) {
   vec2 angleComponents = angleToComponents(angle);
   adjustedCoord = adjustedCoord + angleComponents*distance;
-  //return texture(u_pheremoneActive, unadjustCoords(adjustedCoord)).r;
+  //return texture(u_pheremoneActive, unadjustCoords(adjustedCoord, u_aspectRatio)).r;
   float sensedValue = senseCircle(adjustedCoord, senseCircleRadius());
   
   if (wallAvoidance)
     sensedValue = reduceSenseNearEdge(sensedValue, adjustedCoord);
+  
+  if (sensedValue > agoraphobiaThreshold)
+    sensedAgoraphobia = true;
   
   return sensedValue;
 }
 
 void setRandomAgoraphobiaDuration() {
   uint added = 0u;
-  if (getRandomFloat() > .5)
+  if (getRandomFloat(ant) > .5)
     added = 100u; // TODO: parameterize
   
-  antState = uint(getRandomFloat(1.0, float(u_fps/2))) + added; // TODO: parameterize
-}
-
-void checkAgoraphobia(float sensed) {
-  if (sensed < agoraphobiaThreshold)
-    return;
-  
-  setRandomAgoraphobiaDuration();
+  ant.state = uint(getRandomFloat(ant, 1.0, float(u_fps/2))) + added; // TODO: parameterize
 }
 
 float senseForDirection(vec2 adjustedCoord, float direction) {
@@ -261,100 +188,134 @@ float senseForDirection(vec2 adjustedCoord, float direction) {
   float l = sense(adjustedCoord, u_senseDistance, direction - u_senseAngle);
   float r = sense(adjustedCoord, u_senseDistance, direction + u_senseAngle);
   
-  if (u_agoraphobic)
-    checkAgoraphobia( max(c, max(l, r)) );
+  if (c >= l && c >= r)
+    return direction;
   
-  if (l > c && l > r)
+  if (l > c && r > c)
+  {
+    // random direction
+    //float angleMult = -1.0;
+    //if (getRandomFloat(ant) > .5)
+    //  angleMult = 1.0;
+    //
+    //return direction + u_rotationAnglePerFrame*angleMult;
+    
+    // seek weaker direction
+    if (l > r)
+      return direction + u_rotationAnglePerFrame;
+    else
+      return direction - u_rotationAnglePerFrame;
+  }
+  
+  if (l > r)
     return direction - u_rotationAnglePerFrame;
-  
-  if (r > c)
+  else
     return direction + u_rotationAnglePerFrame;
+}
+
+void wallWrap() {
+  if (ant.pos.x < 0.0)
+    ant.pos.x += u_aspectRatio;
+  else if (ant.pos.x > u_aspectRatio)
+    ant.pos.x -= u_aspectRatio;
   
-  return direction;
+  if (ant.pos.y < 0.0)
+    ant.pos.y += 1.0;
+  else if (ant.pos.y > 1.0)
+    ant.pos.y -= 1.0;
 }
 
 void physicalBounce() {
-  vec2 antAngleComponents = angleToComponents(antAngle);
+  vec2 antAngleComponents = angleToComponents(ant.angle);
   
-  if (antPos.x < 0.0 && antAngleComponents.x < 0.0)
+  if (ant.pos.x < 0.0 && antAngleComponents.x < 0.0)
     antAngleComponents.x *= -1.0;
   
-  if (antPos.y < 0.0 && antAngleComponents.y < 0.0)
+  if (ant.pos.y < 0.0 && antAngleComponents.y < 0.0)
     antAngleComponents.y *= -1.0;
   
-  if (antPos.x > u_aspectRatio && antAngleComponents.x > 0.0)
+  if (ant.pos.x > u_aspectRatio && antAngleComponents.x > 0.0)
     antAngleComponents.x *= -1.0;
   
-  if (antPos.y > 1.0 && antAngleComponents.y > 0.0)
+  if (ant.pos.y > 1.0 && antAngleComponents.y > 0.0)
     antAngleComponents.y *= -1.0;
   
   // components back to angle
-  antAngle = componentsToAngle(antAngleComponents);
+  ant.angle = componentsToAngle(antAngleComponents);
 }
 
 void randomBounce() {
-  vec2 antAngleComponents = angleToComponents(antAngle);
-  
-  if (antPos.x < 0.0) {
+  if (ant.pos.x < 0.0) {
     float normalAngle = TAU * .25;
-    antAngle = getRandomFloat(normalAngle - MAX_BOUNCE_ANGLE_RAD, normalAngle + MAX_BOUNCE_ANGLE_RAD);
-    antPos.x = 0.0;
+    ant.angle = getRandomFloat(ant, normalAngle - MAX_BOUNCE_ANGLE_RAD, normalAngle + MAX_BOUNCE_ANGLE_RAD);
+    ant.pos.x = 0.0;
   }
   
-  if (antPos.y < 0.0) {
+  if (ant.pos.y < 0.0) {
     float normalAngle = TAU * .00;
-    antAngle = getRandomFloat(normalAngle - MAX_BOUNCE_ANGLE_RAD, normalAngle + MAX_BOUNCE_ANGLE_RAD);
-    antPos.y = 0.0;
+    ant.angle = getRandomFloat(ant, normalAngle - MAX_BOUNCE_ANGLE_RAD, normalAngle + MAX_BOUNCE_ANGLE_RAD);
+    ant.pos.y = 0.0;
   }
   
-  if (antPos.x > u_aspectRatio) {
+  if (ant.pos.x > u_aspectRatio) {
     float normalAngle = TAU * .75;
-    antAngle = getRandomFloat(normalAngle - MAX_BOUNCE_ANGLE_RAD, normalAngle + MAX_BOUNCE_ANGLE_RAD);
-    antPos.x = u_aspectRatio;
+    ant.angle = getRandomFloat(ant, normalAngle - MAX_BOUNCE_ANGLE_RAD, normalAngle + MAX_BOUNCE_ANGLE_RAD);
+    ant.pos.x = u_aspectRatio;
   }
   
-  if (antPos.y > 1.0) {
+  if (ant.pos.y > 1.0) {
     float normalAngle = TAU * .50;
-    antAngle = getRandomFloat(normalAngle - MAX_BOUNCE_ANGLE_RAD, normalAngle + MAX_BOUNCE_ANGLE_RAD);
-    antPos.y = 1.0;
+    ant.angle = getRandomFloat(ant, normalAngle - MAX_BOUNCE_ANGLE_RAD, normalAngle + MAX_BOUNCE_ANGLE_RAD);
+    ant.pos.y = 1.0;
   }
 }
 
 bool isInState() {
-  if (antState == 100u) // TODO: parameterize
-    antState = 0u;
+  if (ant.state == 100u) // TODO: parameterize
+    ant.state = 0u;
   
-  return antState > 0u;
+  return ant.state > 0u;
 }
 
 float getDirectionFromState() {
-  antState -= 1u;
+  ant.state -= 1u;
   
   float rotationDirection = 1.0;
-  if (antState >= 100u) // TODO: parameterize
+  if (ant.state >= 100u) // TODO: parameterize
     rotationDirection = -1.0;
   
-  return antAngle + u_rotationAnglePerFrame*rotationDirection;
+  return ant.angle + u_rotationAnglePerFrame*rotationDirection;
 }
 
 void main() {
-  storeAntVariables(texture(u_antsActive, textureCoord));
+  ant = vec4ToAnt(texture(u_antsActive, textureCoord), u_aspectRatio);
   
   // move
-  antPos += angleToComponents(antAngle) * u_antDistancePerFrame;
+  ant.pos += angleToComponents(ant.angle) * u_antDistancePerFrame;
   
   // TODO: make this parameterized
-  if (doRandomBounce)
+  if (wallWrapping)
+    wallWrap();
+  else if (doRandomBounce)
     randomBounce();
   else
     physicalBounce();
   
-  if (!isInState())
-    antAngle = senseForDirection(antPos, antAngle);
+  if (!isInState()) {
+    ant.angle = senseForDirection(ant.pos, ant.angle);
+    if (sensedAgoraphobia && teleportOnAgoraphobia) {
+      ant.pos.x = getRandomFloat(ant) * u_aspectRatio;
+      ant.pos.y = getRandomFloat(ant);
+      ant.angle = getRandomFloat(ant) * TAU;
+    }
+    else if (sensedAgoraphobia && u_agoraphobic) {
+      setRandomAgoraphobiaDuration();
+    }
+  }
   else
-    antAngle = getDirectionFromState();
+    ant.angle = getDirectionFromState();
   
   
-  FragColor = retrieveAntVariables();
+  FragColor = antToVec4(ant, u_aspectRatio);
 }
 `;

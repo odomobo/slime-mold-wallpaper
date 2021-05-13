@@ -101,6 +101,7 @@ function setUniforms(antsActive, antsLast) {
     u_antsHeight: parameters.antsTextureHeight(),
     u_antsWidth: constants.antsTextureWidth,
     u_antsSize: parameters.antsTextureSize(),
+    u_antDistancePerFrame: parameters.antDistancePerFrame(),
     u_aspectRatio: aspectRatio,
     u_screenHeight: gl.drawingBufferHeight,
     u_numberOfAnts: parameters.numberOfAnts(),
@@ -109,7 +110,9 @@ function setUniforms(antsActive, antsLast) {
   twgl.setUniforms(programInfo, uniforms);
 }
 
-const vertShader = `#version 300 es
+const vertShader = `#version 300 es` +
+constants.commonShaderLibrary +
+`
 const vec2 madd=vec2(0.5,0.5);
 in vec2 vertexIn;
 out float adjustedOpacity;
@@ -121,40 +124,15 @@ uniform float u_opacity;
 uniform int u_antsHeight;
 uniform int u_antsWidth;
 uniform int u_antsSize;
+uniform float u_antDistancePerFrame;
 uniform float u_aspectRatio;
 uniform int u_screenHeight;
 uniform int u_numberOfAnts;
 
-const float PI = 3.1415926535897932384626433832795;
+const float DISTANCE_FUDGE_FACTOR = 1.1;
 
-// ant variables; see documentation.md to see how these are stored in the texture.
-vec2 antPos; // always the adjusted value
-uint antState;
-float antAngle;
-uint antRandomSeed;
-
-vec2 angleToComponents(float angle) {
-  return vec2(sin(angle), cos(angle));
-}
-
-vec2 adjustCoords(vec2 coord) {
-  return vec2(coord.x*u_aspectRatio, coord.y);
-}
-
-vec2 unadjustCoords(vec2 coord) {
-  return vec2(coord.x/u_aspectRatio, coord.y);
-}
-
-void storeAntVariables(vec4 ant) {
-  antPos = adjustCoords(ant.rg); // adjustCoords transforms to the screen aspect ratio
-  float antStateF;
-  antAngle = modf(ant.b, antStateF)*2.0*PI;
-  // make sure this is from 0 to 1
-  if (antAngle < 0.0)
-    antAngle += 1.0;
-  antState = uint(antStateF);
-  antRandomSeed = floatBitsToUint(ant.a);
-}
+Ant antLast;
+Ant antActive;
 
 float adjustOpacity(float opacity, float angle)
 {
@@ -182,16 +160,26 @@ void main() {
   int antYCoordIndex = antIndex%u_antsHeight;
   float antYCoord = (0.5 + float(antYCoordIndex)) / float(u_antsHeight);
   
+  antLast = vec4ToAnt(texture(u_antsActive, vec2(antXCoord, antYCoord)), u_aspectRatio);
+  antActive = vec4ToAnt(texture(u_antsLast, vec2(antXCoord, antYCoord)), u_aspectRatio);
   
-  if (textureIndex == 0.0)
-    storeAntVariables(texture(u_antsActive, vec2(antXCoord, antYCoord)));
-  else
-    storeAntVariables(texture(u_antsLast, vec2(antXCoord, antYCoord)));
+  // if we've moved further than possible, then we teleported which means we shouldn't draw this frame
+  float movedDistance = distance(antLast.pos, antActive.pos);
+  if (movedDistance > u_antDistancePerFrame*DISTANCE_FUDGE_FACTOR)
+  {
+    textureCoord = vec2(-10.0, -10.0);
+    gl_Position = vec4(-10.0, -10.0, 0.0, 1.0);
+    return;
+  }
   
-  adjustedOpacity = adjustOpacity(u_opacity, antAngle);
+  adjustedOpacity = adjustOpacity(u_opacity, antLast.angle);
   
   // back to square when setting the position
-  textureCoord = unadjustCoords(antPos);
+  if (textureIndex == 0.0)
+    textureCoord = unadjustCoords(antLast.pos, u_aspectRatio);
+  else
+    textureCoord = unadjustCoords(antActive.pos, u_aspectRatio);
+  
   gl_Position = vec4((textureCoord*2.0-1.0), 0.0, 1.0);
 }
 `;

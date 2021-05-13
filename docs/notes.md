@@ -2,13 +2,16 @@
 
 ## TODOs
 
-What to do with edges? Maybe 2 modes, either bounce or edge wrap. Then we can have renderAnts not render if the distance is greater than 0.5 or something crazy like that.
-I don't like the edge avoidance algorithm... seems pretty unimpressive, because it just makes a border around the window.
+Why the heck can I get huge static bars under a lot of conditions?
+
+Instead of using sensing to determine agoraphobia, do a single sample at the head after moving to determine brightness.
+
+TODO: make draws at edges be consistent, so there's no black border which causes line borders. This can happen by teleporting after overdraw, and as part of teleporting, back up the ant into the screen. Then, don't teleport ant if it's facing the right way.
+
+If agoraphobia teleportation, teleport at random, so wisps can cross without destroying the cluster.
 
 Agoraphobia shouldn't even be an option; should just be hardcoded. It's basically required when wisps are additive instead of blending.
 Or maybe when disabling agoraphobia, we should also change to blend instead of additive.
-
-Or maybe, agoraphobia logic can be like: if too bright, then teleport to random location. Don't render if the distance is greater than length + fudge factor.
 
 Dissipation and opacity are inversely related; maybe control the ratio with 1 parameter, and the screen brightness with another. 
 I think that would give better control. How should I name it? Maybe "Screen Density" and "Wisp Trail Length"?

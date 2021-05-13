@@ -9,7 +9,7 @@ export var inverted = constants.defaultInverted;
 export var blurAmount = constants.defaultBlurAmount;
 export var dissipation = constants.defaultDissipation;
 export var antSpeed = constants.defaultAntSpeed;
-export var antOpacity = constants.defaultAntOpacity;
+export var density = constants.defaultDensity;
 export var numberOfAnts = constants.defaultNumberOfAnts;
 export var agoraphobic = constants.defaultAgoraphobic;
 
@@ -48,8 +48,12 @@ function applyUserProperties(properties) {
     if (properties.speed)
       antSpeed = properties.speed.value;
     
-    if (properties.tendrilopacity)
-      antOpacity = properties.tendrilopacity.value;
+    // TODO: remove from properties
+    //if (properties.tendrilopacity)
+    //  antOpacity = properties.tendrilopacity.value;
+    
+    if (properties.density) // TODO: not yet set
+      density = properties.density.value;
     
     if (properties.tendrilsensorangle)
       senseAngle = properties.tendrilsensorangle.value;

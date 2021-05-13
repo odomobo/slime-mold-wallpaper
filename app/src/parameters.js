@@ -36,11 +36,11 @@ export function update() {
 function initialUpdate() {
   targetRenderColor = wallpaperEngine.renderColor;
   targetBrightness = wallpaperEngine.brightness;
-
+  
   targetBlurAmount = wallpaperEngine.blurAmount;
   targetDissipation = wallpaperEngine.dissipation;
   targetAntSpeed = wallpaperEngine.antSpeed;
-  targetAntOpacity = wallpaperEngine.antOpacity;
+  targetDensity = wallpaperEngine.density;
 
   targetRotationSpeed = wallpaperEngine.rotationSpeed;
   targetSenseAngle = wallpaperEngine.senseAngle;
@@ -75,7 +75,7 @@ var targetBrightness;
 var targetBlurAmount;
 var targetDissipation;
 var targetAntSpeed;
-var targetAntOpacity;
+var targetDensity;
 
 var targetRotationSpeed;
 var targetSenseAngle;
@@ -106,10 +106,12 @@ export function blurAmountPerFrame() {
 export function dissipationPerFrame(){return targetDissipation / wallpaperEngine.fps;}
 export function antDistancePerFrame(){return targetAntSpeed / wallpaperEngine.fps;} // adjust speed to speed per frame
 
-// We want antOpacity to be invariant to frame rate, resolution, number of ants, and speed.
-// TODO: include speed calculation in here also, adjusting for minimum length of root2?
+// antOpacity is invariant to frame rate, resolution, number of ants, speed, and dissipation
 export function antOpacity() {
-  return targetAntOpacity / wallpaperEngine.fps;
+  const coeff = 0.52; // makes 1.0 density be a pleasing value
+  const pixels = gl.drawingBufferWidth * gl.drawingBufferHeight;
+  const dissipation = targetDissipation; // TODO: use a calculation for this instead of getting it as a parameter
+  return (targetDensity * coeff * Math.sqrt(pixels) * targetDissipation) / ( wallpaperEngine.numberOfAnts * targetAntSpeed );
 }
 export function numberOfAnts(){return wallpaperEngine.numberOfAnts;}
 export function agoraphobic(){return wallpaperEngine.agoraphobic;}

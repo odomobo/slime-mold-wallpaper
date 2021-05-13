@@ -61,6 +61,8 @@ function createPheremoneTextures() {
     internalFormat: gl.RGBA16F,
     format: gl.RGBA,
     type: gl.HALF_FLOAT,
+    wrap: gl.REPEAT, // TODO: set this programmatically depending on what's being done with the edge; regenerate (or change texture options) when wrapping mode changes
+    //wrap: gl.CLAMP_TO_EDGE,
   };
   
   pheremoneActive = twgl.createTexture(gl, pheremoneOptions);
@@ -93,8 +95,8 @@ function getAntsRandomArray() {
   var arr = new Float32Array(parameters.antsTextureSize()*4);
   for (var i = 0; i < parameters.antsTextureSize(); i++)
   {
-    arr[i*4 + 0] = Math.random(); // x
-    arr[i*4 + 1] = Math.random(); // y
+    arr[i*4 + 0] = Math.random()*.98 + 0.01; // x
+    arr[i*4 + 1] = Math.random()*.98 + 0.01; // y
     arr[i*4 + 2] = Math.random(); // angle (this should be from 0 to 1, which translates from 0 to 2*PI)
     arr[i*4 + 3] = Math.random(); // random seed
   }
