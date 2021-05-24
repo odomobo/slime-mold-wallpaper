@@ -2,6 +2,8 @@
 
 ## TODOs
 
+Add parameter tweaking to dev version.
+
 If you want to have n random numbers, added together, have the same standard deviation as m random numbers, 
 you have to multiply each random number by sqrt(1/n) or sqrt(1/m), respectively.
 For example, if you want to rotate by rand()*10 degrees each second, but you will be
