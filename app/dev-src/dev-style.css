@@ -1,0 +1,12 @@
+
+#menu {
+    /* position absolute allows it to be on top of the canvas */
+    position: absolute;
+    z-index: 2;
+    color: white;
+    font-size: 14;
+    font-family: Helvetica, Sans-serif;
+    text-align: right;
+    right: 10px;
+    top: 10px;
+}

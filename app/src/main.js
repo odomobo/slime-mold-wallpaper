@@ -10,7 +10,7 @@ import * as parameters from './parameters.js';
 function setupWebGL(evt) {
   window.removeEventListener(evt.type, setupWebGL, false);
   
-  err = document.querySelector("p");
+  err = document.querySelector("#err");
   
   try {
     gl = glhelper.getRenderingContext();

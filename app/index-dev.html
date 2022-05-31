@@ -13,15 +13,76 @@
     
     <script type="module">import './src/main.js';</script>
     <!-- <script type="text/javascript" src="./bundle.js"></script> -->
-    
-    <script type="module">import './dev-src/dev-menu.js';</script>
+
+    <link rel="stylesheet" href="./dev-src/dev-style.css">
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"></script>
+    <script type="module">import './dev-src/dev-menu2.js';</script>
   </head>
   <body>
     <canvas>
       Your browser does not seem to support HTML5 canvas.
     </canvas>
-    <p>
+    <p id="err">
     </p>
-    <dev-menu></dev-menu>
+    
+    <!-- dev menu -->
+    <div id="wrapper">
+      <div id="menu">
+        <label>brightness</label>
+        <input type="text" id="brightness"/><br>
+
+        <label>fps</label>
+        <input type="text" id="fps"/><br>
+
+        <label>blurAmount</label>
+        <input type="text" id="blurAmount"/><br>
+
+        <label>dissipation</label>
+        <input type="text" id="dissipation"/><br>
+
+        <label>antSpeed</label>
+        <input type="text" id="antSpeed"/><br>
+        
+        <label>density</label>
+        <input type="text" id="density"/><br>
+        
+        <label>numberOfAnts</label>
+        <input type="text" id="numberOfAnts"/><br>
+        
+        <label>rotationSpeed</label>
+        <input type="text" id="rotationSpeed"/><br>
+        
+        <label>senseAngle</label>
+        <input type="text" id="senseAngle"/><br>
+        
+        <label>senseLead</label>
+        <input type="text" id="senseLead"/><br>
+        
+        <!--
+        <label>xxx</label>
+        <input type="text" id="xxx"/><br>
+        
+        <!--
+        <label>xxx</label>
+        <input type="text" id="xxx"/><br>
+        
+        <!--
+        <label>xxx</label>
+        <input type="text" id="xxx"/><br>
+        
+        <!--
+        <label>xxx</label>
+        <input type="text" id="xxx"/><br>
+        
+        <!--
+        <label>xxx</label>
+        <input type="text" id="xxx"/><br>
+        
+        -->
+      </div>
+    </div>
   </body>
 </html>

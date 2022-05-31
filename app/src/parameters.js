@@ -1,5 +1,6 @@
 import * as constants from './constants.js';
-import * as wallpaperEngine from './wallpaperEngine.js';
+//import * as wallpaperEngine from './wallpaperEngine.js';
+import * as wallpaperEngine from '../dev-src/dev-menu2.js';
 
 var startTimeMs;
 export function init() {
@@ -104,11 +105,12 @@ export function blurAmountPerFrame() {
       return 1;
 }
 export function dissipationPerFrame(){return targetDissipation / wallpaperEngine.fps;}
-export function antDistancePerFrame(){return targetAntSpeed / wallpaperEngine.fps;} // adjust speed to speed per frame
+const speedFactor = 0.1;
+export function antDistancePerFrame(){return speedFactor * targetAntSpeed / wallpaperEngine.fps;} // adjust speed to speed per frame
 
 // antOpacity is invariant to frame rate, resolution, number of ants, speed, and dissipation
 export function antOpacity() {
-  const coeff = 0.52; // makes 1.0 density be a pleasing value
+  const coeff = 5.2; // makes 1.0 density be a pleasing value
   const pixels = gl.drawingBufferWidth * gl.drawingBufferHeight;
   const dissipation = targetDissipation; // TODO: use a calculation for this instead of getting it as a parameter
   return (targetDensity * coeff * Math.sqrt(pixels) * targetDissipation) / ( wallpaperEngine.numberOfAnts * targetAntSpeed );
@@ -118,4 +120,4 @@ export function agoraphobic(){return wallpaperEngine.agoraphobic;}
 
 export function rotationAnglePerFrame(){return ( targetRotationSpeed * (Math.PI/180) ) / wallpaperEngine.fps;} // converts degrees per second into radians per frame
 export function senseAngle(){return targetSenseAngle * (Math.PI/180);} // converts degrees to radians
-export function senseDistance(){return targetSenseLead * targetAntSpeed;} // distance is lead amount * speed
+export function senseDistance(){return targetSenseLead * targetAntSpeed * speedFactor;} // distance is lead amount * speed

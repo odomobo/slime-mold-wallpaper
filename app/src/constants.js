@@ -8,10 +8,10 @@ export const defaultInverted = false;
 export const defaultFps = 30;
 export const defaultBlurAmount = 4.0;
 export const defaultDissipation = 0.40;
-export const defaultAntSpeed = 0.40;
+export const defaultAntSpeed = 4;
 export const defaultDensity = 2.0;
 export const defaultNumberOfAnts = 1000000;
-export const defaultAgoraphobic = true;
+export const defaultAgoraphobic = false;
 
 export const defaultRotationSpeed = 180;
 export const defaultSenseAngle = 270;
