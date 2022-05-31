@@ -1,6 +1,8 @@
 import * as constants from './constants.js';
-//import * as wallpaperEngine from './wallpaperEngine.js';
-import * as wallpaperEngine from '../dev-src/dev-menu2.js';
+import * as wallpaperEngineImport from './wallpaperEngine.js';
+import * as devMenu from '../dev-src/dev-menu2.js';
+
+const wallpaperEngine = dev ? devMenu : wallpaperEngineImport;
 
 var startTimeMs;
 export function init() {
