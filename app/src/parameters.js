@@ -102,16 +102,20 @@ export function inverted(){return wallpaperEngine.inverted;}
 const speedFactor = 0.1;
 const senseFactor = 0.1;
 
+function getSpeed() {
+  return targetAntSpeed * targetRotationSpeed; // targetRotationSpeed is actually scale
+}
+
 export function blurAmountPerFrame() {
-    var blurAmount = targetBlurAmount * targetAntSpeed * targetDissipation / wallpaperEngine.fps;
+    var blurAmount = targetBlurAmount * getSpeed() * targetDissipation / wallpaperEngine.fps;
     if (blurAmount < 1)
       return blurAmount;
     else
       return 1;
 }
 
-export function dissipationPerFrame(){return targetDissipation * targetAntSpeed / wallpaperEngine.fps;}
-export function antDistancePerFrame(){return speedFactor * targetAntSpeed / wallpaperEngine.fps;} // adjust speed to speed per frame
+export function dissipationPerFrame(){return targetDissipation * getSpeed() / wallpaperEngine.fps;}
+export function antDistancePerFrame(){return speedFactor * getSpeed() / wallpaperEngine.fps;} // adjust speed to speed per frame
 
 // antOpacity is invariant to frame rate, resolution, number of ants, speed, and dissipation
 export function antOpacity() {
@@ -123,9 +127,20 @@ export function antOpacity() {
 export function numberOfAnts(){return wallpaperEngine.numberOfAnts;}
 export function agoraphobic(){return wallpaperEngine.agoraphobic;}
 
-export function rotationAnglePerFrame(){return ( targetRotationSpeed * (Math.PI/180) * targetAntSpeed ) / wallpaperEngine.fps;} // converts degrees per second into radians per frame
-export function senseAngle(){return targetRotationSpeed * targetSenseAngle * (Math.PI/180) / senseDistance() ;} // converts degrees to radians; TODO: clamp to 90 degrees
+function getRotationSpeed(){return 100.0 / targetRotationSpeed;}
+
+export function rotationAnglePerFrame(){return ( getRotationSpeed() * (Math.PI/180) * getSpeed() ) / wallpaperEngine.fps;} // converts degrees per second into radians per frame
+
+// converts degrees to radians; clamp to 90 degrees
+export function senseAngle(){
+  let senseAngleVal = getRotationSpeed() * targetSenseAngle * (Math.PI/180) / senseDistance();
+  // clamp to 90 degrees
+  if (senseAngleVal > Math.PI / 2) {
+    senseAngleVal = Math.PI/2;
+  }
+  return senseAngleVal;
+}
 
 const senseDistanceCorrectionFactor = 60.0;
 
-export function senseDistance(){return targetSenseLead * senseFactor * senseDistanceCorrectionFactor / targetRotationSpeed;} // distance is lead amount * speed
+export function senseDistance(){return targetSenseLead * senseFactor * senseDistanceCorrectionFactor / getRotationSpeed();} // distance is lead amount * speed

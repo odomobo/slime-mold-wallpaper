@@ -10,8 +10,6 @@ Once the above is complete, then we can publish it!
 
 TODO:
 
-* clamp sense angle to 90 degrees
-* figure out random movements?
 * scale parameters
 
 # Phase 2:

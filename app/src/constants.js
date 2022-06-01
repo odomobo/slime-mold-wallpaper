@@ -13,7 +13,7 @@ export const defaultDensity = 2.0;
 export const defaultNumberOfAnts = 1000000;
 export const defaultAgoraphobic = true;
 
-export const defaultRotationSpeed = 200;
+export const defaultRotationSpeed = 1;
 export const defaultSenseAngle = 1.8;
 export const defaultSenseLead = .4;
 
