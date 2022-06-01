@@ -6,11 +6,11 @@ export const defaultBrightness = 0.8;
 export const defaultInverted = false;
 
 export const defaultFps = 30;
-export const defaultBlurAmount = 20.0;
-export const defaultDissipation = 0.20;
+export const defaultBlurAmount = 1.0;
+export const defaultDissipation = 1.0;
 export const defaultAntSpeed = 2;
 export const defaultDensity = 2.0;
-export const defaultNumberOfAnts = 1000000;
+export const defaultNumberOfAnts = 5;
 export const defaultAgoraphobic = true;
 
 export const defaultRotationSpeed = 1;

@@ -84,9 +84,15 @@ var targetRotationSpeed;
 var targetSenseAngle;
 var targetSenseLead;
 
+// numberOfAnts is quality, 1-5. 1 is 10,000 ants, 5 is 1,000,000
+function getNumberOfAnts() {
+  let numberOfAntsVar = 10000 * Math.pow(10, (wallpaperEngine.numberOfAnts-1)/2);
+  return Math.floor(numberOfAntsVar);
+}
+
 
 export function antsTextureHeight() {
-  return Math.ceil(wallpaperEngine.numberOfAnts / constants.antsTextureWidth);
+  return Math.ceil(getNumberOfAnts() / constants.antsTextureWidth);
 }
 
 export function antsTextureSize() {
@@ -106,25 +112,30 @@ function getSpeed() {
   return targetAntSpeed * targetRotationSpeed; // targetRotationSpeed is actually scale
 }
 
+function getDissipation() {
+  return 0.2 / targetDissipation;
+}
+
+const blurAmountFactor = 20.0;
 export function blurAmountPerFrame() {
-    var blurAmount = targetBlurAmount * getSpeed() * targetDissipation / wallpaperEngine.fps;
+    var blurAmount = targetBlurAmount * blurAmountFactor * getSpeed() * getDissipation() * targetRotationSpeed / wallpaperEngine.fps;
     if (blurAmount < 1)
       return blurAmount;
     else
       return 1;
 }
 
-export function dissipationPerFrame(){return targetDissipation * getSpeed() / wallpaperEngine.fps;}
+export function dissipationPerFrame(){return getDissipation() * getSpeed() / wallpaperEngine.fps;}
 export function antDistancePerFrame(){return speedFactor * getSpeed() / wallpaperEngine.fps;} // adjust speed to speed per frame
 
 // antOpacity is invariant to frame rate, resolution, number of ants, speed, and dissipation
 export function antOpacity() {
   const coeff = 5.2; // makes 1.0 density be a pleasing value
   const pixels = gl.drawingBufferWidth * gl.drawingBufferHeight;
-  const dissipation = targetDissipation; // TODO: use a calculation for this instead of getting it as a parameter
-  return (targetDensity * coeff * Math.sqrt(pixels) * targetDissipation) / ( wallpaperEngine.numberOfAnts );
+  const dissipation = getDissipation(); // TODO: use a calculation for this instead of getting it as a parameter
+  return (targetDensity * coeff * Math.sqrt(pixels) * getDissipation()) / ( getNumberOfAnts() );
 }
-export function numberOfAnts(){return wallpaperEngine.numberOfAnts;}
+export function numberOfAnts(){return getNumberOfAnts();}
 export function agoraphobic(){return wallpaperEngine.agoraphobic;}
 
 function getRotationSpeed(){return 100.0 / targetRotationSpeed;}

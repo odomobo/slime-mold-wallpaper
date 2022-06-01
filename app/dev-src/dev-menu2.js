@@ -60,7 +60,7 @@ function load() {
     senseLeadInput.value = senseLead;
     senseLeadInput.onchange = function(){senseLead = senseLeadInput.value;};
     
-    
+    /*
     let agoraphobicInput = document.querySelector("#agoraphobic");
     agoraphobicInput.value = agoraphobic;
     agoraphobicInput.onchange = function(){agoraphobic = agoraphobicInput.value == "true";};
