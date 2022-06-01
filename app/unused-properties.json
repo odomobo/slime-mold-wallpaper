@@ -1,0 +1,32 @@
+{
+            "agoraphobictendrils" : 
+			{
+				"index" : 7,
+				"order" : 107,
+				"text" : "Agoraphobic Wisps",
+				"type" : "bool",
+				"value" : false
+			},
+            "inverted" : 
+			{
+				"index" : 1,
+				"order" : 101,
+				"text" : "Inverted",
+				"type" : "bool",
+				"value" : false
+			},
+            // TODO: change this into agoraphobia amount
+            "tendrilopacity" : 
+			{
+				"fraction" : true,
+				"index" : 5,
+				"max" : 5,
+				"min" : 0,
+				"order" : 105,
+				"precision" : 3,
+				"step" : 0.010000000000000000,
+				"text" : "Trail Density",
+				"type" : "slider",
+				"value" : 2.0
+			},
+}

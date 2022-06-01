@@ -10,8 +10,11 @@ Once the above is complete, then we can publish it!
 
 TODO:
 
-* scale parameters
+* have agoraphobia amount parameter instead of trail density
+* scale parameters... which?
+* clamp angle to 60 degrees?
+* need to make a cool name...
 
 # Phase 2:
 
-* If actual FPS dips below target FPS, should we speed up ants? Maybe not...
+Give a "random" button option for each thing, which hides its control. Add a "randomizer speed" option that makes parameters either change quickly or slowly.

@@ -8,14 +8,14 @@ export const defaultInverted = false;
 export const defaultFps = 30;
 export const defaultBlurAmount = 1.0;
 export const defaultDissipation = 1.0;
-export const defaultAntSpeed = 2;
+export const defaultAntSpeed = 1;
 export const defaultDensity = 2.0;
-export const defaultNumberOfAnts = 5;
+export const defaultNumberOfAnts = 2;
 export const defaultAgoraphobic = true;
 
 export const defaultRotationSpeed = 1;
-export const defaultSenseAngle = 1.8;
-export const defaultSenseLead = .4;
+export const defaultSenseAngle = 1;
+export const defaultSenseLead = 1;
 
   
 export const commonVertShader = `#version 300 es
