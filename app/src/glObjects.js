@@ -61,8 +61,8 @@ function createPheremoneTextures() {
     internalFormat: gl.RGBA16F,
     format: gl.RGBA,
     type: gl.HALF_FLOAT,
-    wrap: gl.REPEAT, // TODO: set this programmatically depending on what's being done with the edge; regenerate (or change texture options) when wrapping mode changes
-    //wrap: gl.CLAMP_TO_EDGE,
+    //wrap: gl.REPEAT, // TODO: set this programmatically depending on what's being done with the edge; regenerate (or change texture options) when wrapping mode changes
+    wrap: gl.CLAMP_TO_EDGE,
   };
   
   pheremoneActive = twgl.createTexture(gl, pheremoneOptions);

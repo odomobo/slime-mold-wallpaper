@@ -4,6 +4,7 @@
     position: absolute;
     z-index: 2;
     color: white;
+    text-shadow: -1px -1px 2px #000000, -1px 1px 2px #000000, 1px 1px 2px #000000, 1px -1px 2px #000000;
     font-size: 14;
     font-family: Helvetica, Sans-serif;
     text-align: right;

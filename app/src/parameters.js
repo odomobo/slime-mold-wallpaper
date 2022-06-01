@@ -99,15 +99,18 @@ export function renderColor(){return targetRenderColor;} // TODO: this needs to 
 export function brightness(){return targetBrightness;}
 export function inverted(){return wallpaperEngine.inverted;}
 
+const speedFactor = 0.1;
+const senseFactor = 0.1;
+
 export function blurAmountPerFrame() {
-    var blurAmount = targetBlurAmount / wallpaperEngine.fps;
+    var blurAmount = targetBlurAmount * targetAntSpeed * targetDissipation / wallpaperEngine.fps;
     if (blurAmount < 1)
       return blurAmount;
     else
       return 1;
 }
-export function dissipationPerFrame(){return targetDissipation / wallpaperEngine.fps;}
-const speedFactor = 0.1;
+
+export function dissipationPerFrame(){return targetDissipation * targetAntSpeed / wallpaperEngine.fps;}
 export function antDistancePerFrame(){return speedFactor * targetAntSpeed / wallpaperEngine.fps;} // adjust speed to speed per frame
 
 // antOpacity is invariant to frame rate, resolution, number of ants, speed, and dissipation
@@ -115,11 +118,14 @@ export function antOpacity() {
   const coeff = 5.2; // makes 1.0 density be a pleasing value
   const pixels = gl.drawingBufferWidth * gl.drawingBufferHeight;
   const dissipation = targetDissipation; // TODO: use a calculation for this instead of getting it as a parameter
-  return (targetDensity * coeff * Math.sqrt(pixels) * targetDissipation) / ( wallpaperEngine.numberOfAnts * targetAntSpeed );
+  return (targetDensity * coeff * Math.sqrt(pixels) * targetDissipation) / ( wallpaperEngine.numberOfAnts );
 }
 export function numberOfAnts(){return wallpaperEngine.numberOfAnts;}
 export function agoraphobic(){return wallpaperEngine.agoraphobic;}
 
-export function rotationAnglePerFrame(){return ( targetRotationSpeed * (Math.PI/180) ) / wallpaperEngine.fps;} // converts degrees per second into radians per frame
-export function senseAngle(){return targetSenseAngle * (Math.PI/180);} // converts degrees to radians
-export function senseDistance(){return targetSenseLead * targetAntSpeed * speedFactor;} // distance is lead amount * speed
+export function rotationAnglePerFrame(){return ( targetRotationSpeed * (Math.PI/180) * targetAntSpeed ) / wallpaperEngine.fps;} // converts degrees per second into radians per frame
+export function senseAngle(){return targetRotationSpeed * targetSenseAngle * (Math.PI/180) / senseDistance() ;} // converts degrees to radians; TODO: clamp to 90 degrees
+
+const senseDistanceCorrectionFactor = 60.0;
+
+export function senseDistance(){return targetSenseLead * senseFactor * senseDistanceCorrectionFactor / targetRotationSpeed;} // distance is lead amount * speed

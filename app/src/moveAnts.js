@@ -116,6 +116,7 @@ const bool teleportOnAgoraphobia = false;
 const bool wallWrapping = false;
 const bool wallAvoidance = false;
 const bool doRandomBounce = false;
+const bool hidePastWall = true;
 
 Ant ant;
 bool sensedAgoraphobia = false;
@@ -134,7 +135,12 @@ float senseCircle(vec2 adjustedCenterCoord, float radius)
     float angle = anglePercentage * TAU;
     vec2 angleComponents = angleToComponents(angle);
     vec2 adjustedSenseCoord = adjustedCenterCoord + angleComponents*radius;
-    float val = texture(u_pheremoneActive, unadjustCoords(adjustedSenseCoord, u_aspectRatio)).r;
+    vec2 unadjustedSenseCoord = unadjustCoords(adjustedSenseCoord, u_aspectRatio);
+
+    if (hidePastWall && (unadjustedSenseCoord.x < 0.0 || unadjustedSenseCoord.x > 1.0 || unadjustedSenseCoord.y < 0.0 || unadjustedSenseCoord.y > 1.0))
+      continue;
+    
+    float val = texture(u_pheremoneActive, unadjustedSenseCoord).r;
     //ret = max(ret, val);
     ret += val;
   }
@@ -225,6 +231,13 @@ void wallWrap() {
     ant.pos.y -= 1.0;
 }
 
+// TODO: make a small chance of a huge direction change
+float randomizeDirection(float direction)
+{
+  float angle = 0.1 * u_rotationAnglePerFrame;
+  return direction + getRandomFloat(ant, -angle, angle);
+}
+
 void physicalBounce() {
   vec2 antAngleComponents = angleToComponents(ant.angle);
   
@@ -303,6 +316,7 @@ void main() {
   
   if (!isInState()) {
     ant.angle = senseForDirection(ant.pos, ant.angle);
+    //ant.angle = randomizeDirection(ant.angle);
     if (sensedAgoraphobia && teleportOnAgoraphobia) {
       ant.pos.x = getRandomFloat(ant) * u_aspectRatio;
       ant.pos.y = getRandomFloat(ant);

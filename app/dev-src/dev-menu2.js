@@ -60,10 +60,10 @@ function load() {
     senseLeadInput.value = senseLead;
     senseLeadInput.onchange = function(){senseLead = senseLeadInput.value;};
     
-    /*
-    let xxxInput = document.querySelector("#xxx");
-    xxxInput.value = xxx;
-    xxxInput.onchange = function(){xxx = xxxInput.value;};
+    
+    let agoraphobicInput = document.querySelector("#agoraphobic");
+    agoraphobicInput.value = agoraphobic;
+    agoraphobicInput.onchange = function(){agoraphobic = agoraphobicInput.value == "true";};
 
     /*
     let xxxInput = document.querySelector("#xxx");
