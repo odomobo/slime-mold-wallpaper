@@ -66,20 +66,6 @@
 				"value" : 1.0
 			},
 			
-			"tendrilsensorangle" : 
-			{
-				"fraction" : true,
-				"index" : 10,
-				"max" : 5,
-				"min" : 0.1,
-				"order" : 105,
-				"precision" : 3,
-				"step" : 0.10000000000000000,
-				"text" : "Independence",
-				"type" : "slider",
-				"value" : 1.0
-			},
-
 			"tendrilsensorleadseconds" : 
 			{
 				"fraction" : false,
@@ -90,6 +76,20 @@
 				"step" : 0.10000000000000000,
 				"order" : 106,
 				"text" : "Assertiveness",
+				"type" : "slider",
+				"value" : 1.0
+			},
+
+			"tendrilsensorangle" : 
+			{
+				"fraction" : true,
+				"index" : 10,
+				"max" : 3,
+				"min" : 0.1,
+				"order" : 105,
+				"precision" : 3,
+				"step" : 0.10000000000000000,
+				"text" : "Independence",
 				"type" : "slider",
 				"value" : 1.0
 			},

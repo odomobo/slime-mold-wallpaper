@@ -92,12 +92,15 @@ export function getAspectRatio()
 
 function aspectRatioScale()
 {
-  return getAspectRatio() / 1.8;
+  return Math.sqrt( getAspectRatio() / 1.8 );
 }
 
 // numberOfAnts is quality, 1-5. 1 is 10,000 ants, 5 is 1,000,000
 function getNumberOfAnts() {
-  let numberOfAntsVar = 10000 * Math.pow(10, (wallpaperEngine.numberOfAnts-1)/2);
+  var quality = wallpaperEngine.numberOfAnts;
+  quality = Math.max(quality, 1);
+  quality = Math.min(quality, 5);
+  let numberOfAntsVar = 10000 * Math.pow(10, (quality-1)/2);
   return Math.floor(numberOfAntsVar);
 }
 
@@ -116,20 +119,25 @@ export function renderColor(){return targetRenderColor;} // TODO: this needs to 
 export function brightness(){return targetBrightness * 0.6;}
 export function inverted(){return wallpaperEngine.inverted;}
 
+function getScale() {
+  return targetRotationSpeed * aspectRatioScale();
+}
+
 const speedFactor = 0.1;
-const senseFactor = 0.1;
 
 function getSpeed() {
-  return targetAntSpeed * targetRotationSpeed * aspectRatioScale(); // targetRotationSpeed is actually scale
+  return targetAntSpeed * getScale(); // targetRotationSpeed is actually scale
 }
 
 function getDissipation() {
   return 0.2 / (targetDissipation * targetRotationSpeed);
 }
 
+
+
 const blurAmountFactor = 20.0;
 export function blurAmountPerFrame() {
-    var blurAmount = targetBlurAmount * blurAmountFactor * getSpeed() * getDissipation() * targetRotationSpeed / wallpaperEngine.fps;
+    var blurAmount = targetBlurAmount * blurAmountFactor * getSpeed() * getDissipation() / wallpaperEngine.fps;
     if (blurAmount < 1)
       return blurAmount;
     else
@@ -141,27 +149,26 @@ export function antDistancePerFrame(){return speedFactor * getSpeed() / wallpape
 
 // antOpacity is invariant to frame rate, resolution, number of ants, speed, and dissipation
 export function antOpacity() {
-  const coeff = 5.2; // makes 1.0 density be a pleasing value
-  const pixels = gl.drawingBufferWidth * gl.drawingBufferHeight;
-  return (targetDensity * coeff * Math.sqrt(pixels) * getDissipation()) / ( getNumberOfAnts() );
+  const coeff = 5.2; // makes 2.0 density be a pleasing value... TODO: adjust and get rid of density parameter eventually, as it's not really needed
+  return (targetDensity * coeff * gl.drawingBufferWidth * getDissipation()) / ( getNumberOfAnts() );
 }
 export function numberOfAnts(){return getNumberOfAnts();}
 export function agoraphobic(){return wallpaperEngine.agoraphobic;}
 
-function getRotationSpeed(){return 100.0 / targetRotationSpeed;}
+function getRotationSpeed(){return 100.0 / getScale();}
 
 export function rotationAnglePerFrame(){return ( getRotationSpeed() * (Math.PI/180) * getSpeed() ) / wallpaperEngine.fps;} // converts degrees per second into radians per frame
 
-// converts degrees to radians; clamp to 90 degrees
+// converts degrees to radians; clamp to 60 degrees
 export function senseAngle(){
-  let senseAngleVal = getRotationSpeed() * targetSenseAngle * (Math.PI/180) / senseDistance();
-  // clamp to 90 degrees
-  if (senseAngleVal > Math.PI / 2) {
-    senseAngleVal = Math.PI/2;
+  let senseAngleVal = ( 20 * (Math.PI/180) * targetSenseAngle ) / ( 1 ); // targetSenseLead is assertiveness, targetSenseAngle is independence
+  // clamp to 60 degrees
+  if (senseAngleVal > Math.PI / 3) {
+    senseAngleVal = Math.PI/3;
   }
   return senseAngleVal;
 }
 
-const senseDistanceCorrectionFactor = 60.0;
+const senseFactor = 0.02;
 
-export function senseDistance(){return targetSenseLead * senseFactor * senseDistanceCorrectionFactor / getRotationSpeed();} // distance is lead amount * speed
+export function senseDistance(){return targetSenseLead * senseFactor * getScale();}

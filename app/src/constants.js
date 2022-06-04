@@ -10,7 +10,7 @@ export const defaultBlurAmount = 1.0;
 export const defaultDissipation = 1.0;
 export const defaultAntSpeed = 1;
 export const defaultDensity = 2.0;
-export const defaultNumberOfAnts = 2;
+export const defaultNumberOfAnts = 5;
 export const defaultAgoraphobic = true;
 
 export const defaultRotationSpeed = 1;
