@@ -92,8 +92,6 @@ function unbindFrameBuffer() {
 
 
 function setUniforms(antsActive, antsLast) {
-  var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight; // TODO: calculate this in parameters???
-  
   var uniforms = {
     u_antsActive: antsActive,
     u_antsLast: antsLast,
@@ -102,7 +100,7 @@ function setUniforms(antsActive, antsLast) {
     u_antsWidth: constants.antsTextureWidth,
     u_antsSize: parameters.antsTextureSize(),
     u_antDistancePerFrame: parameters.antDistancePerFrame(),
-    u_aspectRatio: aspectRatio,
+    u_aspectRatio: parameters.getAspectRatio(),
     u_screenHeight: gl.drawingBufferHeight,
     u_numberOfAnts: parameters.numberOfAnts(),
   };

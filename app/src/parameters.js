@@ -84,6 +84,17 @@ var targetRotationSpeed;
 var targetSenseAngle;
 var targetSenseLead;
 
+
+export function getAspectRatio()
+{
+  return gl.drawingBufferWidth / gl.drawingBufferHeight;
+}
+
+function aspectRatioScale()
+{
+  return getAspectRatio() / 1.8;
+}
+
 // numberOfAnts is quality, 1-5. 1 is 10,000 ants, 5 is 1,000,000
 function getNumberOfAnts() {
   let numberOfAntsVar = 10000 * Math.pow(10, (wallpaperEngine.numberOfAnts-1)/2);
@@ -102,18 +113,18 @@ export function antsTextureSize() {
 export function fps(){return wallpaperEngine.fps;};
 
 export function renderColor(){return targetRenderColor;} // TODO: this needs to be more sophisticated, converting hsv to rgb
-export function brightness(){return targetBrightness;}
+export function brightness(){return targetBrightness * 0.6;}
 export function inverted(){return wallpaperEngine.inverted;}
 
 const speedFactor = 0.1;
 const senseFactor = 0.1;
 
 function getSpeed() {
-  return targetAntSpeed * targetRotationSpeed; // targetRotationSpeed is actually scale
+  return targetAntSpeed * targetRotationSpeed * aspectRatioScale(); // targetRotationSpeed is actually scale
 }
 
 function getDissipation() {
-  return 0.2 / targetDissipation;
+  return 0.2 / (targetDissipation * targetRotationSpeed);
 }
 
 const blurAmountFactor = 20.0;
@@ -132,7 +143,6 @@ export function antDistancePerFrame(){return speedFactor * getSpeed() / wallpape
 export function antOpacity() {
   const coeff = 5.2; // makes 1.0 density be a pleasing value
   const pixels = gl.drawingBufferWidth * gl.drawingBufferHeight;
-  const dissipation = getDissipation(); // TODO: use a calculation for this instead of getting it as a parameter
   return (targetDensity * coeff * Math.sqrt(pixels) * getDissipation()) / ( getNumberOfAnts() );
 }
 export function numberOfAnts(){return getNumberOfAnts();}

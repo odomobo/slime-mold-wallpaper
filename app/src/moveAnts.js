@@ -73,11 +73,10 @@ function unbindFrameBuffer() {
 }
 
 function setUniforms(antsActive, pheremoneActive) {
-  var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
   var uniforms = {
     u_antsActive: antsActive,
     u_pheremoneActive: pheremoneActive,
-    u_aspectRatio: aspectRatio,
+    u_aspectRatio: parameters.getAspectRatio(),
     u_antDistancePerFrame: parameters.antDistancePerFrame(),
     u_senseDistance: parameters.senseDistance(),
     u_senseAngle: parameters.senseAngle(),

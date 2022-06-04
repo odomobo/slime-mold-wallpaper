@@ -36,10 +36,9 @@ function bindBuffer() {
 }
 
 function setUniforms(texture) {
-  var aspectRatio = gl.drawingBufferWidth / gl.drawingBufferHeight;
   var renderColor = parameters.renderColor();
   var uniforms = {
-    u_aspectRatio: aspectRatio,
+    u_aspectRatio: parameters.getAspectRatio(),
     u_renderColor: [renderColor[0], renderColor[1], renderColor[2], 1],
     u_brightness: parameters.brightness(),
     u_inverted: parameters.inverted(),

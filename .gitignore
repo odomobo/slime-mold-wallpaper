@@ -1,3 +1,5 @@
 # don't include mongoose
 *.exe
+# don't include webpack log
+*.log
 dist/

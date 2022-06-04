@@ -14,6 +14,7 @@ TODO:
 * scale parameters... which?
 * clamp angle to 60 degrees?
 * need to make a cool name...
+* should targetRotationSpeed be squared in blurAmountPerFrame???
 
 # Phase 2:
 

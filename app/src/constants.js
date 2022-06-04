@@ -2,7 +2,7 @@
 export const antsTextureWidth = 1024;
 
 export const defaultRenderColor = [0.40, 0.50, 0.56];
-export const defaultBrightness = 0.8;
+export const defaultBrightness = 1.0;
 export const defaultInverted = false;
 
 export const defaultFps = 30;
@@ -67,7 +67,7 @@ Ant vec4ToAnt(vec4 vec, float aspectRatio) {
   ant.angle = modf(vec.b, antStateF)*TAU;
   // make sure this is from 0 to 1
   if (ant.angle < 0.0)
-    ant.angle += 1.0;
+    ant.angle += TAU;
   ant.state = uint(antStateF);
   ant.randomSeed = floatBitsToUint(vec.a);
   return ant;
