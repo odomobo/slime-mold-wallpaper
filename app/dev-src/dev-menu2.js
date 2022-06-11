@@ -19,10 +19,27 @@ export var rotationSpeed = constants.defaultRotationSpeed;
 export var senseAngle = constants.defaultSenseAngle;
 export var senseLead = constants.defaultSenseLead;
 
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+
 function load() {
+
+    let colorInput = document.querySelector("#color");
+    colorInput.oninput  = function(){
+        let hexColor = colorInput.value;
+        let components = hexToRgb(hexColor);
+        renderColor = [components.r/255, components.g/255, components.b/255];
+    };
+
     let brightnessInput = document.querySelector("#brightness");
     brightnessInput.value = brightness;
-    brightnessInput.onchange = function(){brightness = brightnessInput.value;};
+    brightnessInput.oninput = function(){brightness = brightnessInput.value;};
 
     let fpsInput = document.querySelector("#fps");
     fpsInput.value = fps;
@@ -30,35 +47,35 @@ function load() {
 
     let blurAmountInput = document.querySelector("#blurAmount");
     blurAmountInput.value = blurAmount;
-    blurAmountInput.onchange = function(){blurAmount = blurAmountInput.value;};
+    blurAmountInput.oninput = function(){blurAmount = blurAmountInput.value;};
 
     let dissipationInput = document.querySelector("#dissipation");
     dissipationInput.value = dissipation;
-    dissipationInput.onchange = function(){dissipation = dissipationInput.value;};
+    dissipationInput.oninput = function(){dissipation = dissipationInput.value;};
 
     let antSpeedInput = document.querySelector("#antSpeed");
     antSpeedInput.value = antSpeed;
-    antSpeedInput.onchange = function(){antSpeed = antSpeedInput.value;};
+    antSpeedInput.oninput = function(){antSpeed = antSpeedInput.value;};
 
     let densityInput = document.querySelector("#density");
     densityInput.value = density;
-    densityInput.onchange = function(){density = densityInput.value;};
+    densityInput.oninput = function(){density = densityInput.value;};
 
     let numberOfAntsInput = document.querySelector("#numberOfAnts");
     numberOfAntsInput.value = numberOfAnts;
-    numberOfAntsInput.onchange = function(){numberOfAnts = numberOfAntsInput.value;};
+    numberOfAntsInput.oninput = function(){numberOfAnts = numberOfAntsInput.value;};
 
     let rotationSpeedInput = document.querySelector("#rotationSpeed");
     rotationSpeedInput.value = rotationSpeed;
-    rotationSpeedInput.onchange = function(){rotationSpeed = rotationSpeedInput.value;};
+    rotationSpeedInput.oninput = function(){rotationSpeed = rotationSpeedInput.value;};
 
     let senseAngleInput = document.querySelector("#senseAngle");
     senseAngleInput.value = senseAngle;
-    senseAngleInput.onchange = function(){senseAngle = senseAngleInput.value;};
+    senseAngleInput.oninput = function(){senseAngle = senseAngleInput.value;};
 
     let senseLeadInput = document.querySelector("#senseLead");
     senseLeadInput.value = senseLead;
-    senseLeadInput.onchange = function(){senseLead = senseLeadInput.value;};
+    senseLeadInput.oninput = function(){senseLead = senseLeadInput.value;};
     
     /*
     let agoraphobicInput = document.querySelector("#agoraphobic");

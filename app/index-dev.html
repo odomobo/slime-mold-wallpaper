@@ -29,34 +29,46 @@
     <div id="wrapper">
       <div id="menu">
         <label>quality (1-5)</label>
-        <input type="text" id="numberOfAnts"/><br>
+        <!-- <input type="text" id="numberOfAnts"/><br> -->
+        <input type="range" id="numberOfAnts" min="1" max="5"/><br>
 
         <label>fps</label>
         <input type="text" id="fps"/><br>
 
+        <label>color</label>
+        <input type="color" id="color" value="#e66465"/><br>
+
         <label>brightness</label>
-        <input type="text" id="brightness"/><br>
+        <!-- <input type="text" id="brightness"/><br> -->
+        <input type="range" id="brightness" min="0" max="5" step="0.1"><br>
 
         <label>scale</label>
-        <input type="text" id="rotationSpeed"/><br>
+        <!-- <input type="text" id="rotationSpeed"/><br> -->
+        <input type="range" id="rotationSpeed" min="0.1" max="5" step="0.1"><br>
 
         <label>speed</label>
-        <input type="text" id="antSpeed"/><br>
+        <!-- <input type="text" id="antSpeed"/><br> -->
+        <input type="range" id="antSpeed" min="0.1" max="5" step="0.1"><br>
         
         <label>assertiveness</label>
-        <input type="text" id="senseLead"/><br>
+        <!-- <input type="text" id="senseLead"/><br> -->
+        <input type="range" id="senseLead" min="0.1" max="5" step="0.1"><br>
 
         <label>independence</label>
-        <input type="text" id="senseAngle"/><br>
+        <!-- <input type="text" id="senseAngle"/><br> -->
+        <input type="range" id="senseAngle" min="0.1" max="5" step="0.1"><br>
 
         <label>trail density</label>
-        <input type="text" id="density"/><br>
+        <!-- <input type="text" id="density"/><br> -->
+        <input type="range" id="density" min="0.1" max="5" step="0.1"><br>
 
         <label>trail length</label>
-        <input type="text" id="dissipation"/><br>
+        <!-- <input type="text" id="dissipation"/><br> -->
+        <input type="range" id="dissipation" min="0.1" max="5" step="0.1"><br>
 
         <label>trail dissipation</label>
-        <input type="text" id="blurAmount"/><br>
+        <!-- <input type="text" id="blurAmount"/><br> -->
+        <input type="range" id="blurAmount" min="0" max="5" step="0.1"><br>
 
         <!--
         <label>agoraphobic</label>
