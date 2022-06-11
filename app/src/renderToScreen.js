@@ -63,15 +63,24 @@ void main() {
   
   value = value * u_brightness;
   
+  vec4 blackColor = vec4(0.0);
+  vec4 whiteColor = vec4(1.0);
+
   if (u_inverted)
-    value = 1.0 - value;
-  
-  if (value < 0.5) {
-    float scaledValue = value*2.0;
-    FragColor = mix(vec4(0.0), u_renderColor, scaledValue);
+  {
+    blackColor = vec4(1.0);
+    whiteColor = vec4(0.0);
+  }
+
+  value = value * 2.0;
+  if (value < 1.0) {
+    FragColor = mix(blackColor, u_renderColor, value - 0.0);
+  } else if (value < 2.0) {
+    FragColor = mix(u_renderColor, whiteColor, value - 1.0);
+  } else if (value < 3.0) {
+    FragColor = mix(whiteColor, u_renderColor, value - 2.0); 
   } else {
-    float scaledValue = (value-0.5)*2.0;
-    FragColor = mix(u_renderColor, vec4(1.0), scaledValue);
+    FragColor = mix(u_renderColor, blackColor, value - 3.0);
   }
   
   //FragColor = texture(u_texture0, textureCoord);
