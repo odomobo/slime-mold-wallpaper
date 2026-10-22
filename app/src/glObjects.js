@@ -3,6 +3,8 @@ import * as parameters from './parameters.js';
 
 export var pheremoneActive = null;
 export var pheremoneTemp = null;
+// downsampled pheremone, used by blurPheremone: pheremoneLevels[level] is 1/2^level the size (index 0 is unused)
+export var pheremoneLevels = [];
 var pheremoneLastSize = [-1, -1];
 var pheremoneLastFloat32 = null;
 export var antsActive = null;
@@ -85,18 +87,39 @@ function createPheremoneTextures() {
   var pheremoneOptions = {
     width: gl.drawingBufferWidth,
     height: gl.drawingBufferHeight,
-    internalFormat: float32 ? gl.RGBA32F : gl.RGBA16F,
-    format: gl.RGBA,
+    // single channel; R16F is renderable and blendable under EXT_color_buffer_float, same as RGBA16F
+    internalFormat: float32 ? gl.R32F : gl.R16F,
+    format: gl.RED,
     type: float32 ? gl.FLOAT : gl.HALF_FLOAT,
     //wrap: gl.REPEAT, // TODO: set this programmatically depending on what's being done with the edge; regenerate (or change texture options) when wrapping mode changes
     wrap: gl.CLAMP_TO_EDGE,
+    // otherwise twgl generates (never updated) mipmaps for power-of-2 sizes, and samples them
+    auto: false,
+    min: gl.LINEAR,
+    mag: gl.LINEAR,
   };
-  
+
   pheremoneActive = twgl.createTexture(gl, pheremoneOptions);
   pheremoneTemp = twgl.createTexture(gl, pheremoneOptions);
-  
+  createPheremoneLevels(pheremoneOptions);
+
   pheremoneLastSize = [gl.drawingBufferWidth, gl.drawingBufferHeight];
   pheremoneLastFloat32 = float32;
+}
+
+function createPheremoneLevels(pheremoneOptions) {
+  for (var level = 1; level < pheremoneLevels.length; level++)
+    gl.deleteTexture(pheremoneLevels[level].texture);
+  pheremoneLevels = [null];
+
+  // padded, because blurPheremone offsets the pyramid grid by up to 2^maxLevel pixels
+  var padding = 1 << constants.pheremoneMaxLevel;
+  for (var level = 1; level <= constants.pheremoneMaxLevel; level++) {
+    var width = Math.ceil((gl.drawingBufferWidth + padding) / (1 << level));
+    var height = Math.ceil((gl.drawingBufferHeight + padding) / (1 << level));
+    var options = Object.assign({}, pheremoneOptions, { width: width, height: height });
+    pheremoneLevels.push({ texture: twgl.createTexture(gl, options), width: width, height: height });
+  }
 }
 
 function createAntsTextures() {

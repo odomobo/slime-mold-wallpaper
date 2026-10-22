@@ -48,16 +48,17 @@ function draw() {
     // glObjects needs to be resized after glhelper!
     glhelper.resizeIfNecessary();
     glObjects.resizeIfNecessary();
-    
+
+    if (DEV)
+      devStats.beginFrame();
+
     // each frame, we want to: 
     // 1. blur the pheremone trail, to prepare for moving the ants
     // 2. move the ants
     // 3. draw the ants in their new position, onto the pheremone texture
     // 4. render the pheremone texture to the screen
     
-    blurPheremone.draw(glObjects.pheremoneTemp, glObjects.pheremoneActive, 0);
-    glObjects.swapPheremone();
-    blurPheremone.draw(glObjects.pheremoneTemp, glObjects.pheremoneActive, 1);
+    blurPheremone.draw(glObjects.pheremoneTemp, glObjects.pheremoneActive);
     glObjects.swapPheremone();
     
     moveAnts.draw(glObjects.antsTemp, glObjects.antsActive, glObjects.pheremoneActive);
@@ -65,11 +66,13 @@ function draw() {
     
     renderAnts.draw(glObjects.pheremoneActive, glObjects.antsActive, glObjects.antsTemp);
 
-    if (DEV)
-      devStats.update(glObjects.pheremoneActive);
-    
     renderToScreen.draw(glObjects.pheremoneActive);
-    
+
+    if (DEV) {
+      devStats.endFrame();
+      devStats.update(glObjects.pheremoneActive); // after endFrame, so its readback isn't timed
+    }
+
   } catch (e) {
     err.innerHTML = e.message;
     throw e;

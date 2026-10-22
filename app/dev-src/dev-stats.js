@@ -17,10 +17,66 @@ var readBuffer = null;
 var lastUpdateMs = -Infinity;
 var statsElement;
 
+// GPU frame timing. The timer extension isn't always exposed; without it, fall back to timing between gl.finish() calls,
+// which includes CPU submission time and defeats pipelining, so it's only approximate (shown as "gpu~").
+var timerExt = null;
+var pendingQueries = [];
+var gpuTimesMs = [];
+var frameStartMs;
+
 export function init() {
   programInfo = twgl.createProgramInfo(gl, [constants.commonVertShader, fragShader]);
   initializeBuffer();
   statsElement = document.querySelector("#stats");
+  timerExt = gl.getExtension('EXT_disjoint_timer_query_webgl2');
+}
+
+// wrap all of a frame's rendering in these
+export function beginFrame() {
+  if (timerExt == null) {
+    gl.finish();
+    frameStartMs = performance.now();
+    return;
+  }
+
+  var query = gl.createQuery();
+  gl.beginQuery(timerExt.TIME_ELAPSED_EXT, query);
+  pendingQueries.push(query);
+}
+
+export function endFrame() {
+  if (timerExt == null) {
+    gl.finish();
+    gpuTimesMs.push(performance.now() - frameStartMs);
+    return;
+  }
+
+  gl.endQuery(timerExt.TIME_ELAPSED_EXT);
+  collectQueries();
+}
+
+// results arrive a few frames late
+function collectQueries() {
+  var disjoint = gl.getParameter(timerExt.GPU_DISJOINT_EXT);
+  while (pendingQueries.length > 0) {
+    var query = pendingQueries[0];
+    if (!gl.getQueryParameter(query, gl.QUERY_RESULT_AVAILABLE))
+      break;
+
+    if (!disjoint)
+      gpuTimesMs.push(gl.getQueryParameter(query, gl.QUERY_RESULT) / 1e6);
+    gl.deleteQuery(query);
+    pendingQueries.shift();
+  }
+}
+
+function takeAverageGpuTimeMs() {
+  if (gpuTimesMs.length == 0)
+    return null;
+
+  var average = gpuTimesMs.reduce((a, b) => a + b, 0) / gpuTimesMs.length;
+  gpuTimesMs = [];
+  return average;
 }
 
 export function update(pheremone) {
@@ -83,13 +139,17 @@ function display(stats) {
   if (devMenu.pheremoneFloat32 && !glhelper.float32PheremoneSupported)
     format += " (f32 unsupported)";
 
+  var gpuTimeMs = takeAverageGpuTimeMs();
+  var gpuTime = gpuTimeMs == null ? "..." : gpuTimeMs.toFixed(2) + " ms";
+
   statsElement.textContent =
     "mean  " + stats.mean.toFixed(4) + "\n" +
     "p50   " + stats.p50.toFixed(4) + "\n" +
     "p95   " + stats.p95.toFixed(4) + "\n" +
     "max   " + stats.max.toFixed(4) + "\n" +
     ">" + agoraphobiaThreshold.toFixed(1) + "  " + (stats.overThreshold * 100).toFixed(2) + "%\n" +
-    "fmt   " + format;
+    "fmt   " + format + "\n" +
+    (timerExt == null ? "gpu~  " : "gpu   ") + gpuTime;
 }
 
 function initializeBuffer() {

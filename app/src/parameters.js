@@ -137,16 +137,23 @@ function getDissipation() {
 
 
 
-const blurAmountFactor = 20.0;
-export function blurAmountPerFrame() {
-    var blurAmount = targetBlurAmount * blurAmountFactor * getSpeed() * getDissipation() / wallpaperEngine.fps;
-    if (blurAmount < 1)
-      return blurAmount;
-    else
-      return 1;
+// Standard deviation of the blur a trail accumulates over its lifetime, in screen heights at scale 1.
+// This value matches the look of the old 9-tap blur at 1080p.
+const blurSpreadFactor = 0.0048;
+
+// Per-axis blur variance to apply this frame, in pixels^2. Over a trail's lifetime, this adds up to a spread that's
+// relative to the screen size and scale, and independent of speed, trail length, and fps.
+export function blurVariancePerFrame() {
+  var spreadPixels = Math.sqrt(targetBlurAmount) * blurSpreadFactor * getScale() * gl.drawingBufferHeight;
+  var trailLifetimeFrames = 1 / dissipationPerFrame();
+  return spreadPixels * spreadPixels / trailLifetimeFrames;
 }
 
-export function dissipationPerFrame(){return getDissipation() * getSpeed() / wallpaperEngine.fps;}
+// fraction of the pheremone that dissipates each frame
+export function dissipationPerFrame() {
+  var dissipation = getDissipation() * getSpeed() / wallpaperEngine.fps;
+  return 1 - Math.pow(1 - dissipation, 2); // this used to be applied twice per frame (once per blur pass), so keep that
+}
 export function antDistancePerFrame(){return speedFactor * getSpeed() / wallpaperEngine.fps;} // adjust speed to speed per frame
 
 // antOpacity is invariant to frame rate, resolution, number of ants, speed, and dissipation

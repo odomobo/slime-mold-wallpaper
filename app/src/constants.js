@@ -1,6 +1,9 @@
 
 export const antsTextureWidth = 1024;
 
+// number of downsampled pheremone levels blurPheremone can use; each level down is half the resolution
+export const pheremoneMaxLevel = 7;
+
 export const defaultRenderColor = [0.40, 0.50, 0.56];
 export const defaultBrightness = 1.0;
 export const defaultInverted = false;
