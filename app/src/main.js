@@ -6,6 +6,7 @@ import * as moveAnts from './moveAnts.js';
 import * as blurPheremone from './blurPheremone.js';
 import * as constants from './constants.js';
 import * as parameters from './parameters.js';
+import * as devMenu from '../dev-src/dev-menu2.js';
 import * as devStats from '../dev-src/dev-stats.js';
 
 function setupWebGL(evt) {
@@ -22,8 +23,10 @@ function setupWebGL(evt) {
     moveAnts.init();
     renderAnts.init();
     renderToScreen.init();
-    if (dev)
+    if (DEV) {
+      devMenu.init();
       devStats.init();
+    }
 
     window.requestAnimationFrame(draw);
   } catch (e) {
@@ -62,7 +65,7 @@ function draw() {
     
     renderAnts.draw(glObjects.pheremoneActive, glObjects.antsActive, glObjects.antsTemp);
 
-    if (dev)
+    if (DEV)
       devStats.update(glObjects.pheremoneActive);
     
     renderToScreen.draw(glObjects.pheremoneActive);

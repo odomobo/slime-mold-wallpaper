@@ -1,0 +1,12 @@
+{
+  "name": "slime-mold-wallpaper",
+  "private": true,
+  "scripts": {
+    "dev": "node build.mjs --dev --serve",
+    "build": "node build.mjs",
+    "build:dev": "node build.mjs --dev"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

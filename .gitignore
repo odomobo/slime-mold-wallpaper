@@ -3,3 +3,7 @@
 # don't include webpack log
 *.log
 dist/
+# npm
+node_modules
+# dev build output (dist is covered above)
+dist-dev

@@ -3,7 +3,7 @@ import * as glhelper from './glhelper.js';
 import * as wallpaperEngineImport from './wallpaperEngine.js';
 import * as devMenu from '../dev-src/dev-menu2.js';
 
-const wallpaperEngine = dev ? devMenu : wallpaperEngineImport;
+const wallpaperEngine = DEV ? devMenu : wallpaperEngineImport;
 
 var startTimeMs;
 export function init() {

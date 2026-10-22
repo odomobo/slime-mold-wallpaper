@@ -30,7 +30,7 @@ function hexToRgb(hex) {
     } : null;
   }
 
-function load() {
+export function init() {
 
     let colorInput = document.querySelector("#color");
     colorInput.oninput  = function(){
@@ -101,5 +101,3 @@ function load() {
     
     */
 }
-
-window.addEventListener("load", load, false);

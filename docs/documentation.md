@@ -1,3 +1,20 @@
+## Building
+
+Run `npm install` once (from the same environment you'll run npm in; esbuild's binary is platform-specific).
+
+* `npm run dev`: dev server with live reload and the dev menu, at http://localhost:8000/index-dev.html. JS changes reload automatically; HTML/CSS changes need a manual refresh.
+* `npm run build`: production build into `dist/`. Point Wallpaper Engine at `dist/project.json`.
+* `npm run build:dev`: dev build (with dev menu and stats) into `dist-dev/`, titled "slime mold (dev)", for testing inside Wallpaper Engine.
+
+Everything is bundled by esbuild into a single classic script (`bundle.js`), because Wallpaper Engine loads wallpapers
+from disk, where ES modules don't load. `DEV` is a compile-time constant; code under `if (DEV)` (dev menu, dev stats)
+is stripped from production builds, so dev modules must not do anything at import time - give them an `init()` instead.
+
+If Wallpaper Engine edits `dist/project.json` (e.g. when publishing), copy those changes back to `app/project.json`,
+since builds overwrite it.
+
+## Globals
+
 helper globals:
 * err: a paragraph that you can see innerHTML to show error message.
 * gl: the opengl object
