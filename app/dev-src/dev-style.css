@@ -11,3 +11,8 @@
     right: 10px;
     top: 10px;
 }
+
+#stats {
+    text-align: left;
+    font-family: monospace;
+}

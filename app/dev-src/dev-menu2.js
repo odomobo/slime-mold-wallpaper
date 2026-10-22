@@ -19,6 +19,8 @@ export var rotationSpeed = constants.defaultRotationSpeed;
 export var senseAngle = constants.defaultSenseAngle;
 export var senseLead = constants.defaultSenseLead;
 
+export var pheremoneFloat32 = constants.defaultPheremoneFloat32;
+
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
@@ -76,6 +78,10 @@ function load() {
     let senseLeadInput = document.querySelector("#senseLead");
     senseLeadInput.value = senseLead;
     senseLeadInput.oninput = function(){senseLead = senseLeadInput.value;};
+
+    let pheremoneFloat32Input = document.querySelector("#pheremoneFloat32");
+    pheremoneFloat32Input.checked = pheremoneFloat32;
+    pheremoneFloat32Input.onchange = function(){pheremoneFloat32 = pheremoneFloat32Input.checked;};
     
     /*
     let agoraphobicInput = document.querySelector("#agoraphobic");

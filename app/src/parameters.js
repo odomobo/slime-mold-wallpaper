@@ -1,4 +1,5 @@
 import * as constants from './constants.js';
+import * as glhelper from './glhelper.js';
 import * as wallpaperEngineImport from './wallpaperEngine.js';
 import * as devMenu from '../dev-src/dev-menu2.js';
 
@@ -114,6 +115,7 @@ export function antsTextureSize() {
 }
 
 export function fps(){return wallpaperEngine.fps;};
+export function pheremoneFloat32(){return wallpaperEngine.pheremoneFloat32 && glhelper.float32PheremoneSupported;}
 
 export function renderColor(){return targetRenderColor;} // TODO: this needs to be more sophisticated, converting hsv to rgb
 export function brightness(){return targetBrightness * 0.6;}

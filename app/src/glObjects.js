@@ -4,6 +4,7 @@ import * as parameters from './parameters.js';
 export var pheremoneActive = null;
 export var pheremoneTemp = null;
 var pheremoneLastSize = [-1, -1];
+var pheremoneLastFloat32 = null;
 export var antsActive = null;
 export var antsTemp = null;
 var antsLastHeight = -1;
@@ -15,7 +16,8 @@ export function init() {
 }
 
 export function resizeIfNecessary() {
-  if (pheremoneLastSize[0] != gl.drawingBufferWidth || pheremoneLastSize[1] != gl.drawingBufferHeight)
+  if (pheremoneLastSize[0] != gl.drawingBufferWidth || pheremoneLastSize[1] != gl.drawingBufferHeight
+    || pheremoneLastFloat32 != parameters.pheremoneFloat32())
     resizePheremone();
   
   if (antsLastHeight != parameters.antsTextureHeight())
@@ -35,13 +37,37 @@ export function swapAnts() {
 }
 
 function resizePheremone() {
-  if (pheremoneActive != null)
-    gl.deleteTexture(pheremoneActive);
-  
+  var oldActive = pheremoneActive;
+  var oldSize = pheremoneLastSize;
+
   if (pheremoneTemp != null)
     gl.deleteTexture(pheremoneTemp);
-  
+
   createPheremoneTextures()
+
+  // if only the format changed (f16/f32 A/B testing), keep the existing trails
+  if (oldActive != null && oldSize[0] == pheremoneLastSize[0] && oldSize[1] == pheremoneLastSize[1])
+    copyTexture(oldActive, pheremoneActive, oldSize[0], oldSize[1]);
+
+  if (oldActive != null)
+    gl.deleteTexture(oldActive);
+}
+
+function copyTexture(src, dst, width, height) {
+  var readFrameBuffer = gl.createFramebuffer();
+  var drawFrameBuffer = gl.createFramebuffer();
+
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, readFrameBuffer);
+  gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, src, 0);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, drawFrameBuffer);
+  gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, dst, 0);
+
+  gl.blitFramebuffer(0, 0, width, height, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+  gl.deleteFramebuffer(readFrameBuffer);
+  gl.deleteFramebuffer(drawFrameBuffer);
 }
 
 function resizeAnts() {
@@ -55,12 +81,13 @@ function resizeAnts() {
 }
 
 function createPheremoneTextures() {
+  var float32 = parameters.pheremoneFloat32();
   var pheremoneOptions = {
     width: gl.drawingBufferWidth,
     height: gl.drawingBufferHeight,
-    internalFormat: gl.RGBA16F,
+    internalFormat: float32 ? gl.RGBA32F : gl.RGBA16F,
     format: gl.RGBA,
-    type: gl.HALF_FLOAT,
+    type: float32 ? gl.FLOAT : gl.HALF_FLOAT,
     //wrap: gl.REPEAT, // TODO: set this programmatically depending on what's being done with the edge; regenerate (or change texture options) when wrapping mode changes
     wrap: gl.CLAMP_TO_EDGE,
   };
@@ -69,6 +96,7 @@ function createPheremoneTextures() {
   pheremoneTemp = twgl.createTexture(gl, pheremoneOptions);
   
   pheremoneLastSize = [gl.drawingBufferWidth, gl.drawingBufferHeight];
+  pheremoneLastFloat32 = float32;
 }
 
 function createAntsTextures() {

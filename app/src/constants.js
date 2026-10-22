@@ -17,6 +17,8 @@ export const defaultRotationSpeed = 1;
 export const defaultSenseAngle = 1;
 export const defaultSenseLead = 1;
 
+export const defaultPheremoneFloat32 = false;
+
   
 export const commonVertShader = `#version 300 es
 const vec2 madd=vec2(0.5,0.5);

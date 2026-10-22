@@ -17,6 +17,8 @@ export var rotationSpeed = constants.defaultRotationSpeed;
 export var senseAngle = constants.defaultSenseAngle;
 export var senseLead = constants.defaultSenseLead;
 
+export var pheremoneFloat32 = constants.defaultPheremoneFloat32;
+
 function applyUserProperties(properties) {
   // TODO: remove this and replace with something useful
   try {

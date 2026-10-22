@@ -6,6 +6,7 @@ import * as moveAnts from './moveAnts.js';
 import * as blurPheremone from './blurPheremone.js';
 import * as constants from './constants.js';
 import * as parameters from './parameters.js';
+import * as devStats from '../dev-src/dev-stats.js';
 
 function setupWebGL(evt) {
   window.removeEventListener(evt.type, setupWebGL, false);
@@ -21,7 +22,9 @@ function setupWebGL(evt) {
     moveAnts.init();
     renderAnts.init();
     renderToScreen.init();
-    
+    if (dev)
+      devStats.init();
+
     window.requestAnimationFrame(draw);
   } catch (e) {
     err.innerHTML = e.message;
@@ -58,6 +61,9 @@ function draw() {
     glObjects.swapAnts();
     
     renderAnts.draw(glObjects.pheremoneActive, glObjects.antsActive, glObjects.antsTemp);
+
+    if (dev)
+      devStats.update(glObjects.pheremoneActive);
     
     renderToScreen.draw(glObjects.pheremoneActive);
     
