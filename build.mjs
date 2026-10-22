@@ -1,5 +1,5 @@
 // Build script; run through the npm scripts in package.json:
-//   npm run dev        dev server with live reload, at http://localhost:<port>/index-dev.html
+//   npm run dev        dev server with live reload, at http://localhost:<port>/
 //   npm run build      production build into dist/ (point Wallpaper Engine at dist/project.json)
 //   npm run build:dev  dev build (with dev menu) into dist-dev/, which can also be loaded in Wallpaper Engine
 import * as esbuild from 'esbuild';
@@ -13,19 +13,8 @@ const serve = args.includes('--serve');
 const appDir = 'app';
 const outDir = dev ? 'dist-dev' : 'dist';
 
-// [source in app/, destination in outDir]
-const staticFiles = dev
-  ? [
-      ['index-dev.html', 'index.html'],
-      ['style.css', 'style.css'],
-      ['dev-src/dev-style.css', 'dev-src/dev-style.css'],
-      ['twgl-full.js', 'twgl-full.js'],
-    ]
-  : [
-      ['index.html', 'index.html'],
-      ['style.css', 'style.css'],
-      ['twgl-full.min.js', 'twgl-full.min.js'],
-    ];
+// copied from app/ into outDir as-is
+const staticFiles = ['index.html', 'style.css', 'twgl-full.min.js'];
 
 const buildOptions = {
   entryPoints: [path.join(appDir, 'src/main.js')],
@@ -34,6 +23,8 @@ const buildOptions = {
   format: 'iife',
   // DEV is a compile-time constant, so production builds strip the dev menu and dev stats entirely
   define: { DEV: String(dev) },
+  // lets the dev menu import its markup and styles as strings
+  loader: { '.html': 'text', '.css': 'text' },
   minify: !dev,
   sourcemap: dev ? 'inline' : false,
   logLevel: 'info',
@@ -49,15 +40,13 @@ if (serve) {
   });
   await ctx.watch();
   const { port } = await ctx.serve({ servedir: appDir });
-  console.log(`\nDev server: http://localhost:${port}/index-dev.html\n`);
+  console.log(`\nDev server: http://localhost:${port}/\n`);
 } else {
   fs.rmSync(outDir, { recursive: true, force: true });
   await esbuild.build({ ...buildOptions, outfile: path.join(outDir, 'bundle.js') });
 
-  for (const [from, to] of staticFiles) {
-    fs.mkdirSync(path.dirname(path.join(outDir, to)), { recursive: true });
-    fs.copyFileSync(path.join(appDir, from), path.join(outDir, to));
-  }
+  for (const file of staticFiles)
+    fs.copyFileSync(path.join(appDir, file), path.join(outDir, file));
 
   const project = JSON.parse(fs.readFileSync(path.join(appDir, 'project.json'), 'utf8'));
   if (dev)

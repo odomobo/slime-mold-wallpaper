@@ -1,6 +1,9 @@
 import * as constants from '../src/constants.js';
 import * as parameters from '../src/parameters.js';
 import * as wallpaperEngine from '../src/wallpaperEngine.js';
+// imported as text (see loader in build.mjs), and injected into the page by init()
+import menuHtml from './dev-menu.html';
+import menuCss from './dev-style.css';
 
 export var fps = constants.defaultFps;
 
@@ -31,6 +34,10 @@ function hexToRgb(hex) {
   }
 
 export function init() {
+    let style = document.createElement("style");
+    style.textContent = menuCss;
+    document.head.appendChild(style);
+    document.body.insertAdjacentHTML("beforeend", menuHtml);
 
     let colorInput = document.querySelector("#color");
     colorInput.oninput  = function(){

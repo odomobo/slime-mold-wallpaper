@@ -2,7 +2,8 @@
 
 Run `npm install` once (from the same environment you'll run npm in; esbuild's binary is platform-specific).
 
-* `npm run dev`: dev server with live reload and the dev menu, at http://localhost:8000/index-dev.html. JS changes reload automatically; HTML/CSS changes need a manual refresh.
+* `npm run dev`: dev server with live reload and the dev menu, at http://localhost:8000/. Changes under `src/` and
+  `dev-src/` (including the dev menu's html/css) reload automatically; `index.html`/`style.css` need a manual refresh.
 * `npm run build`: production build into `dist/`. Point Wallpaper Engine at `dist/project.json`.
 * `npm run build:dev`: dev build (with dev menu and stats) into `dist-dev/`, titled "slime mold (dev)", for testing inside Wallpaper Engine.
 
